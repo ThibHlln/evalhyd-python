@@ -1,3 +1,3 @@
 # evalhyd-python
 
-Python bindings for `evalhy` utility
+Python bindings for `evalhyd` utility
