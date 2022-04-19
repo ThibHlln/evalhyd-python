@@ -3,7 +3,7 @@
 #define FORCE_IMPORT_ARRAY
 #include <xtensor-python/pyarray.hpp>
 
-#include "nse.hpp"
+#include "evalhyd/nse.hpp"
 
 namespace py = pybind11;
 
@@ -15,6 +15,6 @@ PYBIND11_MODULE(evalhyd, m)
 
     m.doc() = "evaluator for hydrological simulations/forecasts";
 
-    m.def("nse", nse<xt::pyarray<double>>, "Return the Nash-Sutcliffe Efficiency (NSE)",
+    m.def("nse", eh::nse<xt::pyarray<double>>, "Return the Nash-Sutcliffe Efficiency (NSE)",
           py::arg("sim"), py::arg("obs"), py::arg("axis") = 0);
 }
