@@ -40,7 +40,10 @@ class get_numpy_include(object):
 ext_modules = [
     Extension(
         'evalhyd',
-        ['src/evalhyd-python.cpp'],
+        ['src/evalhyd-python.cpp',
+         'deps/evalhyd/include/evalhyd/probabilistic/evaluator_brier.cpp',
+         'deps/evalhyd/include/evalhyd/probabilistic/evaluator_elements.cpp',
+         'deps/evalhyd/include/evalhyd/probabilistic/evaluator_utils.cpp'],
         include_dirs=[
             # Path to pybind11 headers
             get_pybind_include(),
@@ -106,13 +109,14 @@ class BuildExt(build_ext):
             ext.extra_compile_args = opts
         build_ext.build_extensions(self)
 
+
 setup(
     name='evalhyd-python',
     version=__version__,
     author='Thibault Hallouin',
     author_email='thibault.hallouin@inrae.fr',
-    url='https://gitlab.irstea.fr/thibault.hallouin/evalhyd-python',
-    description='EvalHyd in Python',
+    url='https://gitlab.irstea.fr/evalhyd/evalhyd-python',
+    description='Python bindings for EvalHyd',
     long_description='An evaluator for hydrological simulations/forecasts.',
     ext_modules=ext_modules,
     install_requires=['pybind11>=2.0.1', 'numpy'],
