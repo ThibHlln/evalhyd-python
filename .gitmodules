@@ -1,6 +1,6 @@
 [submodule "deps/evalhyd"]
 	path = deps/evalhyd
-	url = https://gitlab.irstea.fr/thibault.hallouin/evalhyd.git
+	url = https://gitlab.irstea.fr/evalhyd/evalhyd.git
 [submodule "deps/xtensor-python"]
 	path = deps/xtensor-python
 	url = https://github.com/xtensor-stack/xtensor-python.git
