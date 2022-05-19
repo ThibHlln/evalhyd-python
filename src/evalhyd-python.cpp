@@ -19,25 +19,21 @@ PYBIND11_MODULE(evalhyd, m)
 
     m.doc() = "evaluator for hydrological simulations/forecasts";
 
-    // Submodule for deterministic evaluation of streamflow simulations
-    py::module_ md = m.def_submodule("determinist", "deterministic streamflow evaluation");
-
-    md.def(
-        "evaluate", ehd::evaluate<xt::pytensor<double, 1>>,
+    // deterministic evaluation
+    m.def(
+        "evald", ehd::evaluate<xt::pytensor<double, 1>>,
         "Deterministic streamflow evaluation [1D arrays]",
         py::arg("metrics"), py::arg("q_obs"), py::arg("q_sim")
     );
-    md.def(
-        "evaluate", ehd::evaluate<xt::pytensor<double, 2>>,
+    m.def(
+        "evald", ehd::evaluate<xt::pytensor<double, 2>>,
         "Deterministic streamflow evaluation [2D arrays]",
         py::arg("metrics"), py::arg("q_obs"), py::arg("q_sim")
     );
 
-    // Submodule for probabilistic evaluation of streamflow forecasts
-    py::module_ mp = m.def_submodule("probabilist", "probabilistic streamflow evaluation");
-
-    mp.def(
-        "evaluate", ehp::evaluate,
+    // probabilistic evaluation
+    m.def(
+        "evalp", ehp::evaluate,
         "Probabilist streamflow evaluation",
         py::arg("metrics"), py::arg("q_obs"), py::arg("q_frc"), py::arg("q_thr")
     );
