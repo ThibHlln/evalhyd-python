@@ -41,9 +41,10 @@ ext_modules = [
     Extension(
         'evalhyd',
         ['src/evalhyd-python.cpp',
-         'deps/evalhyd/include/evalhyd/probabilistic/evaluator_brier.cpp',
-         'deps/evalhyd/include/evalhyd/probabilistic/evaluator_elements.cpp',
-         'deps/evalhyd/include/evalhyd/probabilistic/evaluator_utils.cpp'],
+         'deps/evalhyd/include/evalhyd/probabilist/evaluator_brier.cpp',
+         'deps/evalhyd/include/evalhyd/probabilist/evaluator_elements.cpp',
+         'deps/evalhyd/include/evalhyd/probabilist/evaluator_quantiles.cpp',
+         'deps/evalhyd/include/evalhyd/probabilist/evaluator_utils.cpp'],
         include_dirs=[
             # Path to pybind11 headers
             get_pybind_include(),

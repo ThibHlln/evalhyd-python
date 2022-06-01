@@ -9,9 +9,6 @@
 
 namespace py = pybind11;
 
-namespace ehd = evalhyd::determinist;
-namespace ehp = evalhyd::probabilist;
-
 // Python Module and Docstrings
 PYBIND11_MODULE(evalhyd, m)
 {
@@ -30,7 +27,7 @@ PYBIND11_MODULE(evalhyd, m)
 
     // deterministic evaluation
     m.def(
-        "evald", ehd::evaluate<xt::pytensor<double, 1>>,
+        "evald", evalhyd::evald<xt::pytensor<double, 1>>,
         R"pbdoc(
             Function to evaluate deterministic streamflow evaluation.
 
@@ -70,7 +67,7 @@ PYBIND11_MODULE(evalhyd, m)
         py::arg("metrics"), py::arg("q_obs"), py::arg("q_prd")
     );
     m.def(
-        "evald", ehd::evaluate<xt::pytensor<double, 2>>,
+        "evald", evalhyd::evald<xt::pytensor<double, 2>>,
         R"pbdoc(
             Function to evaluate deterministic streamflow evaluation.
 
@@ -118,7 +115,7 @@ PYBIND11_MODULE(evalhyd, m)
 
     // probabilistic evaluation
     m.def(
-        "evalp", ehp::evaluate,
+        "evalp", evalhyd::evalp,
         R"pbdoc(
             Function to evaluate probabilistic streamflow evaluation.
 
@@ -173,6 +170,7 @@ PYBIND11_MODULE(evalhyd, m)
             [[257.412129]]
 
         )pbdoc",
-        py::arg("metrics"), py::arg("q_obs"), py::arg("q_prd"), py::arg("q_thr")
+        py::arg("metrics"), py::arg("q_obs"), py::arg("q_prd"),
+        py::arg("q_thr") = py::list()
     );
 }
