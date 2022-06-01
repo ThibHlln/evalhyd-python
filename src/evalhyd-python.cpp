@@ -17,24 +17,162 @@ PYBIND11_MODULE(evalhyd, m)
 {
     xt::import_numpy();
 
-    m.doc() = "evaluator for hydrological simulations/forecasts";
+    m.doc() = R"pbdoc(
+        Utility for evaluation of streamflow predictions.
+
+        .. currentmodule:: evalhyd
+
+        .. autosummary::
+
+           evald
+           evalp
+    )pbdoc";
 
     // deterministic evaluation
     m.def(
         "evald", ehd::evaluate<xt::pytensor<double, 1>>,
-        "Deterministic streamflow evaluation [1D arrays]",
-        py::arg("metrics"), py::arg("q_obs"), py::arg("q_sim")
+        R"pbdoc(
+            Function to evaluate deterministic streamflow evaluation.
+
+            :Parameters:
+
+                metrics: `List[str]`
+                    The sequence of evaluation metrics to be computed.
+
+                q_obs: `numpy.ndarray`
+                    1D array of streamflow observations.
+
+                q_prd: `numpy.ndarray`
+                    1D array of streamflow observations.
+
+            :Returns:
+
+                `List[numpy.ndarray]`
+                    The sequence of evaluation metrics computed
+                    in the same order as given in *metrics*.
+
+            **Examples**
+
+            >>> import numpy
+            >>> import evalhyd
+            >>> obs = numpy.array(
+            ...     [4.7, 4.3, 5.5, 2.7, 4.1]
+            ... )
+            >>> prd = numpy.array(
+            ...     [5.3, 4.2, 5.7, 2.3, 3.1]
+            ... )
+
+            >>> nse, = evalhyd.evalp(['NSE'], obs, prd)
+            >>> print(nse)
+            [0.6254771]
+
+        )pbdoc",
+        py::arg("metrics"), py::arg("q_obs"), py::arg("q_prd")
     );
     m.def(
         "evald", ehd::evaluate<xt::pytensor<double, 2>>,
-        "Deterministic streamflow evaluation [2D arrays]",
-        py::arg("metrics"), py::arg("q_obs"), py::arg("q_sim")
+        R"pbdoc(
+            Function to evaluate deterministic streamflow evaluation.
+
+            :Parameters:
+
+                metrics: `List[str]`
+                    The sequence of evaluation metrics to be computed.
+
+                q_obs: `numpy.ndarray`
+                    2D array of streamflow observations (with its temporal
+                    dimension on axis 1).
+
+                q_prd: `numpy.ndarray`
+                    2D array of streamflow observations (with its temporal
+                    dimension on axis 1).
+
+            :Returns:
+
+                `List[numpy.ndarray]`
+                    The sequence of evaluation metrics computed
+                    in the same order as given in *metrics*.
+
+            **Examples**
+
+            >>> import numpy
+            >>> import evalhyd
+            >>> obs = numpy.array(
+            ...     [[4.7, 4.3, 5.5, 2.7, 4.1]]
+            ... )
+            >>> prd = numpy.array(
+            ...     [[5.3, 4.2, 5.7, 2.3, 3.1],
+            ...      [4.3, 4.2, 4.7, 4.3, 3.3],
+            ...      [5.3, 5.2, 5.7, 2.3, 3.9]]
+            ... )
+
+            >>> nse, = evalhyd.evalp(['NSE'], obs, prd)
+            >>> print(nse)
+            [[0.6254771 ]
+             [0.04341603]
+             [0.66364504]]
+
+        )pbdoc",
+        py::arg("metrics"), py::arg("q_obs"), py::arg("q_prd")
     );
 
     // probabilistic evaluation
     m.def(
         "evalp", ehp::evaluate,
-        "Probabilist streamflow evaluation",
-        py::arg("metrics"), py::arg("q_obs"), py::arg("q_frc"), py::arg("q_thr")
+        R"pbdoc(
+            Function to evaluate probabilistic streamflow evaluation.
+
+            :Parameters:
+
+                metrics: `List[str]`
+                    The sequence of evaluation metrics to be computed.
+
+                q_obs: `numpy.ndarray`
+                    2D array of streamflow observations (with size 1 for
+                    axis 0, and with the temporal dimension on axis 1).
+
+                q_prd: `numpy.ndarray`
+                    2D array of streamflow observations (with the ensemble
+                    members on axis 0, and with the temporal dimension on
+                    axis 1).
+
+                q_thr: `List[float]`, optional
+                    The streamflow threshold(s) to consider for the *metrics*
+                    assessing the prediction of exceedance events. If not
+                    provided, set to default value as an empty `list`.
+
+            :Returns:
+
+                `List[numpy.ndarray]`
+                    The sequence of evaluation metrics computed
+                    in the same order as given in *metrics*.
+
+            **Examples**
+
+            >>> import numpy
+            >>> import evalhyd
+            >>> obs = numpy.array(
+            ...     [[4.7, 4.3, 5.5, 2.7, 4.1]]
+            ... )
+            >>> prd = numpy.array(
+            ...     [[5.3, 4.2, 5.7, 2.3, 3.1],
+            ...      [4.3, 4.2, 4.7, 4.3, 3.3],
+            ...      [5.3, 5.2, 5.7, 2.3, 3.9]]
+            ... )
+
+            >>> bs, bs_lbd = evalhyd.evalp(['BS', 'BS_LBD'], obs, prd, [4., 5.])
+            >>> print(bs)
+            [[0.22222222]
+             [0.13333333]]
+            >>> print(bs_lbd)
+            [[0.07222222 0.02777778 0.17777778]
+             [0.07222222 0.02777778 0.08888889]]
+
+            >>> qs, = evalhyd.evalp(['QS'], obs, prd)
+            >>> print(qs)
+            [[257.412129]]
+
+        )pbdoc",
+        py::arg("metrics"), py::arg("q_obs"), py::arg("q_prd"), py::arg("q_thr")
     );
 }
