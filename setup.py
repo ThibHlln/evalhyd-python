@@ -118,7 +118,7 @@ setup(
     author_email='thibault.hallouin@inrae.fr',
     url='https://gitlab.irstea.fr/evalhyd/evalhyd-python',
     description='Python bindings for EvalHyd',
-    long_description='An evaluator for hydrological simulations/forecasts.',
+    long_description='An evaluator for streamflow predictions.',
     ext_modules=ext_modules,
     install_requires=['pybind11>=2.0.1', 'numpy'],
     cmdclass={'build_ext': BuildExt},
