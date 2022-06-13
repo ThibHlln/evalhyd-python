@@ -165,9 +165,9 @@ PYBIND11_MODULE(evalhyd, m)
             [[0.07222222 0.02777778 0.17777778]
              [0.07222222 0.02777778 0.08888889]]
 
-            >>> qs, = evalhyd.evalp(obs, prd, ['QS'])
+            >>> crps, = evalhyd.evalp(obs, prd, ['CRPS'])
             >>> print(qs)
-            [[257.412129]]
+            [[0.24193548]]
 
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
