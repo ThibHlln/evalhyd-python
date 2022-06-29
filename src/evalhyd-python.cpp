@@ -166,7 +166,7 @@ PYBIND11_MODULE(evalhyd, m)
                 [0.07222222 0.02777778 0.08888889]]
 
                >>> crps, = evalhyd.evalp(obs, prd, ['CRPS'])
-               >>> print(qs)
+               >>> print(crps)
                [[0.24193548]]
 
         )pbdoc",
