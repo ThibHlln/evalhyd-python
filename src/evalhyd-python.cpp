@@ -4,8 +4,8 @@
 #define FORCE_IMPORT_ARRAY
 #include <xtensor-python/pytensor.hpp>
 
-#include "evalhyd/determinist.hpp"
-#include "evalhyd/probabilist.hpp"
+#include "evalhyd/evald.hpp"
+#include "evalhyd/evalp.hpp"
 
 namespace py = pybind11;
 
@@ -16,13 +16,6 @@ PYBIND11_MODULE(evalhyd, m)
 
     m.doc() = R"pbdoc(
         Utility for evaluation of streamflow predictions.
-
-        .. currentmodule:: evalhyd
-
-        .. autosummary::
-
-           evald
-           evalp
     )pbdoc";
 
     // deterministic evaluation
@@ -35,9 +28,11 @@ PYBIND11_MODULE(evalhyd, m)
 
                 q_obs: `numpy.ndarray`
                     1D array of streamflow observations.
+                    shape: (time,)
 
                 q_prd: `numpy.ndarray`
                     1D array of streamflow predictions.
+                    shape: (time,)
 
                 metrics: `List[str]`
                     The sequence of evaluation metrics to be computed.
@@ -47,6 +42,7 @@ PYBIND11_MODULE(evalhyd, m)
                 `List[numpy.ndarray]`
                     The sequence of evaluation metrics computed
                     in the same order as given in *metrics*.
+                    shape: [(components,)+]
 
             :Examples:
 
@@ -74,12 +70,12 @@ PYBIND11_MODULE(evalhyd, m)
             :Parameters:
 
                 q_obs: `numpy.ndarray`
-                    2D array of streamflow observations (with its temporal
-                    dimension on axis 1).
+                    2D array of streamflow observations.
+                    shape: (1, time)
 
                 q_prd: `numpy.ndarray`
-                    2D array of streamflow predictions (with its temporal
-                    dimension on axis 1).
+                    2D array of streamflow predictions.
+                    shape: (1+, time)
 
                 metrics: `List[str]`
                     The sequence of evaluation metrics to be computed.
@@ -89,6 +85,7 @@ PYBIND11_MODULE(evalhyd, m)
                 `List[numpy.ndarray]`
                     The sequence of evaluation metrics computed
                     in the same order as given in *metrics*.
+                    shape: [(1+, components), ...]
 
             :Examples:
 
@@ -114,6 +111,10 @@ PYBIND11_MODULE(evalhyd, m)
     );
 
     // probabilistic evaluation
+    py::list empty_1d;
+    py::list empty_2d;
+    empty_2d.append(py::list());
+
     m.def(
         "evalp", evalhyd::evalp,
         R"pbdoc(
@@ -122,13 +123,12 @@ PYBIND11_MODULE(evalhyd, m)
             :Parameters:
 
                 q_obs: `numpy.ndarray`
-                    2D array of streamflow observations (with size 1 for
-                    axis 0, and with the temporal dimension on axis 1).
+                    2D array of streamflow observations.
+                    shape: (sites, time)
 
                 q_prd: `numpy.ndarray`
-                    2D array of streamflow predictions (with the ensemble
-                    members on axis 0, and with the temporal dimension on
-                    axis 1).
+                    4D array of streamflow predictions.
+                    shape: (sites, lead times, members, time)
 
                 metrics: `List[str]`
                     The sequence of evaluation metrics to be computed.
@@ -137,12 +137,24 @@ PYBIND11_MODULE(evalhyd, m)
                     The streamflow threshold(s) to consider for the *metrics*
                     assessing the prediction of exceedance events. If not
                     provided, set to default value as an empty `list`.
+                    shape: (thresholds,)
+
+                t_msk: `numpy.ndarray`, optional
+                    2D array of masks to generate temporal subsets of the whole
+                    streamflow time series (where True/False is used for the
+                    time steps to include/discard in a given subset). If not
+                    provided, no subset is performed and only one set of metrics
+                    is returned corresponding to the whole time series. If
+                    provided, as many sets of metrics are returned as they are
+                    masks provided.
+                    shape: (subsets, time)
 
             :Returns:
 
                 `List[numpy.ndarray]`
                     The sequence of evaluation metrics computed
                     in the same order as given in *metrics*.
+                    shape: [(sites, lead times, subsets, {quantiles,} {thresholds,} {components}), ...]
 
             :Examples:
 
@@ -171,6 +183,6 @@ PYBIND11_MODULE(evalhyd, m)
 
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
-        py::arg("q_thr") = py::list()
+        py::arg("q_thr") = empty_1d, py::arg("t_msk") = empty_2d
     );
 }
