@@ -43,22 +43,6 @@ PYBIND11_MODULE(evalhyd, m)
                     The sequence of evaluation metrics computed
                     in the same order as given in *metrics*.
                     shape: [(components,)+]
-
-            :Examples:
-
-               >>> import numpy
-               >>> import evalhyd
-               >>> obs = numpy.array(
-               ...     [4.7, 4.3, 5.5, 2.7, 4.1]
-               ... )
-               >>> prd = numpy.array(
-               ...     [5.3, 4.2, 5.7, 2.3, 3.1]
-               ... )
-
-               >>> nse, = evalhyd.evalp(obs, prd, ['NSE'])
-               >>> print(nse)
-               [0.6254771]
-
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics")
     );
@@ -86,26 +70,6 @@ PYBIND11_MODULE(evalhyd, m)
                     The sequence of evaluation metrics computed
                     in the same order as given in *metrics*.
                     shape: [(1+, components), ...]
-
-            :Examples:
-
-               >>> import numpy
-               >>> import evalhyd
-               >>> obs = numpy.array(
-               ...     [[4.7, 4.3, 5.5, 2.7, 4.1]]
-               ... )
-               >>> prd = numpy.array(
-               ...     [[5.3, 4.2, 5.7, 2.3, 3.1],
-               ...      [4.3, 4.2, 4.7, 4.3, 3.3],
-               ...      [5.3, 5.2, 5.7, 2.3, 3.9]]
-               ... )
-
-               >>> nse, = evalhyd.evalp(obs, prd, ['NSE'])
-               >>> print(nse)
-               [[0.6254771 ]
-                [0.04341603]
-                [0.66364504]]
-
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics")
     );
@@ -155,32 +119,6 @@ PYBIND11_MODULE(evalhyd, m)
                     The sequence of evaluation metrics computed
                     in the same order as given in *metrics*.
                     shape: [(sites, lead times, subsets, {quantiles,} {thresholds,} {components}), ...]
-
-            :Examples:
-
-               >>> import numpy
-               >>> import evalhyd
-               >>> obs = numpy.array(
-               ...     [[4.7, 4.3, 5.5, 2.7, 4.1]]
-               ... )
-               >>> prd = numpy.array(
-               ...     [[5.3, 4.2, 5.7, 2.3, 3.1],
-               ...      [4.3, 4.2, 4.7, 4.3, 3.3],
-               ...      [5.3, 5.2, 5.7, 2.3, 3.9]]
-               ... )
-
-               >>> bs, bs_lbd = evalhyd.evalp(obs, prd, ['BS', 'BS_LBD'], [4., 5.])
-               >>> print(bs)
-               [[0.22222222]
-                [0.13333333]]
-               >>> print(bs_lbd)
-               [[0.07222222 0.02777778 0.17777778]
-                [0.07222222 0.02777778 0.08888889]]
-
-               >>> crps, = evalhyd.evalp(obs, prd, ['CRPS'])
-               >>> print(crps)
-               [[0.24193548]]
-
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
         py::arg("q_thr") = empty_1d, py::arg("t_msk") = empty_2d
