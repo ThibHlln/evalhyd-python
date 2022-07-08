@@ -36,6 +36,44 @@ PYBIND11_MODULE(evalhyd, m)
 
                 metrics: `List[str]`
                     The sequence of evaluation metrics to be computed.
+                    
+                transform: `str`, optional
+                   The transformation to apply to both streamflow observations
+                   and predictions prior to the calculation of the *metrics*.
+                   The options are listed in the table below.
+
+                   ========================  ==================================
+                   transformations           details
+                   ========================  ==================================
+                   ``"sqrt"``                The square root function
+                                             **f(Q) = √Q** is applied.
+                   ``"pow"``                 The power function
+                                             **f(Q) = Qⁿ** is applied (where
+                                             the power **n** can be set through
+                                             the *exponent* parameter).
+                   ``"inv"``                 The reciprocal function
+                                             **f(Q) = 1/Q** is applied.
+                   ``"log"``                 The natural logarithm function
+                                             **f(Q) = ln(Q)** is applied.
+                   ========================  ==================================
+
+                exponent: `float`, optional
+                   The value of the exponent n to use when the *transform* is
+                   the power function. If not provided (or set to default value
+                   1), the streamflow observations and predictions remain
+                   untransformed.
+
+                epsilon: `float`, optional
+                   The value of the small constant ε to add to both the
+                   streamflow observations and predictions prior to the
+                   calculation of the *metrics* when the *transform* is the
+                   reciprocal function, the natural logarithm, or the power
+                   function with a negative exponent (since none are defined
+                   for 0). If not provided (or set to default value -9),
+                   one hundredth of the mean of the streamflow observations
+                   is used as value for epsilon, as recommended by
+                   `Pushpalatha et al. (2012)
+                   <https://doi.org/10.1016/j.jhydrol.2011.11.055>`_.
 
             :Returns:
 
@@ -44,7 +82,9 @@ PYBIND11_MODULE(evalhyd, m)
                     in the same order as given in *metrics*.
                     shape: [(components,)+]
         )pbdoc",
-        py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics")
+        py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
+        py::arg("transform")="none", py::arg("exponent")=1,
+        py::arg("epsilon")=-9
     );
     m.def(
         "evald", evalhyd::evald<xt::pytensor<double, 2>>,
@@ -64,6 +104,44 @@ PYBIND11_MODULE(evalhyd, m)
                 metrics: `List[str]`
                     The sequence of evaluation metrics to be computed.
 
+                transform: `str`, optional
+                   The transformation to apply to both streamflow observations
+                   and predictions prior to the calculation of the *metrics*.
+                   The options are listed in the table below.
+
+                   ========================  ==================================
+                   transformations           details
+                   ========================  ==================================
+                   ``"sqrt"``                The square root function
+                                             **f(Q) = √Q** is applied.
+                   ``"pow"``                 The power function
+                                             **f(Q) = Qⁿ** is applied (where
+                                             the power **n** can be set through
+                                             the *exponent* parameter).
+                   ``"inv"``                 The reciprocal function
+                                             **f(Q) = 1/Q** is applied.
+                   ``"log"``                 The natural logarithm function
+                                             **f(Q) = ln(Q)** is applied.
+                   ========================  ==================================
+
+                exponent: `float`, optional
+                   The value of the exponent n to use when the *transform* is
+                   the power function. If not provided (or set to default value
+                   1), the streamflow observations and predictions remain
+                   untransformed.
+
+                epsilon: `float`, optional
+                   The value of the small constant ε to add to both the
+                   streamflow observations and predictions prior to the
+                   calculation of the *metrics* when the *transform* is the
+                   reciprocal function, the natural logarithm, or the power
+                   function with a negative exponent (since none are defined
+                   for 0). If not provided (or set to default value -9),
+                   one hundredth of the mean of the streamflow observations
+                   is used as value for epsilon, as recommended by
+                   `Pushpalatha et al. (2012)
+                   <https://doi.org/10.1016/j.jhydrol.2011.11.055>`_.
+
             :Returns:
 
                 `List[numpy.ndarray]`
@@ -71,7 +149,9 @@ PYBIND11_MODULE(evalhyd, m)
                     in the same order as given in *metrics*.
                     shape: [(1+, components), ...]
         )pbdoc",
-        py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics")
+        py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
+        py::arg("transform")="none", py::arg("exponent")=1,
+        py::arg("epsilon")=-9
     );
 
     // probabilistic evaluation
