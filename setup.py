@@ -116,7 +116,7 @@ setup(
     version=__version__,
     author='Thibault Hallouin',
     author_email='thibault.hallouin@inrae.fr',
-    url='https://gitlab.irstea.fr/evalhyd/evalhyd-python',
+    url='https://gitlab.irstea.fr/hycar-hydro/evalhyd/evalhyd-python',
     description='Python bindings for EvalHyd',
     long_description='An evaluator for streamflow predictions.',
     ext_modules=ext_modules,
