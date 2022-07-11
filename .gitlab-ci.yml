@@ -10,6 +10,8 @@ build-job:
     # compile and install library
     - python -m pip install numpy pybind11
     - python -m pip install .
+    # make sure package can be imported
+    - python -c "import evalhyd"
 
 test-job:
   stage: test
