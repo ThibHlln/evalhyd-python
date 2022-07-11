@@ -2,6 +2,8 @@ image: python:latest
 
 build-job:
   stage: build
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
   script:
     # print Python version
     - python --version
