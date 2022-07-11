@@ -1,9 +1,5 @@
 image: python:latest
 
-cache:
-  paths:
-    - venv/
-
 build-job:
   stage: build
   variables:
@@ -13,15 +9,11 @@ build-job:
     - python --version
     # set up virtual environment
     - pip install virtualenv
-    - virtualenv venv
-    - source venv/bin/activate
     # compile and install library
     - pip install -e .
 
 test-job:
   stage: test
   script:
-    # bring back virtual environment set up in build job
-    - source venv/bin/activate
     # run test suite
     - (cd ./tests && python run_all_tests.py)
