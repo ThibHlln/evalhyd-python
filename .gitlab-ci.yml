@@ -8,7 +8,7 @@ build-job:
     # print Python version
     - python --version
     # compile and install library
-    - pip install --user .
+    - pip install .
 
 test-job:
   stage: test
