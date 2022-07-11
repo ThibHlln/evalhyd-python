@@ -7,10 +7,8 @@ build-job:
   script:
     # print Python version
     - python --version
-    # set up virtual environment
-    - pip install virtualenv
     # compile and install library
-    - pip install -e .
+    - pip install --user .
 
 test-job:
   stage: test
