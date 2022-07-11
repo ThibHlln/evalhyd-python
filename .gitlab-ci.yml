@@ -1,5 +1,9 @@
 image: python:latest
 
+cache:
+  paths:
+    - venv/
+
 build-job:
   stage: build
   variables:
@@ -17,5 +21,7 @@ build-job:
 test-job:
   stage: test
   script:
+    # bring back virtual environment set up in build job
+    - source venv/bin/activate
     # run test suite
     - (cd ./tests && python run_all_tests.py)
