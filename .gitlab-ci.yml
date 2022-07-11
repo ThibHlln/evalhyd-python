@@ -1,0 +1,19 @@
+image: python:latest
+
+build-job:
+  stage: build
+  script:
+    # print Python version
+    - python --version
+    # set up virtual environment
+    - pip install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
+    # compile and install library
+    - pip install -e .
+
+test-job:
+  stage: test
+  script:
+    # run test suite
+    - (cd ./tests && python run_all_tests.py)
