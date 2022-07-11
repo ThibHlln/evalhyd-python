@@ -8,6 +8,7 @@ build-job:
     # print Python version
     - python --version
     # compile and install library
+    - pip install numpy pybind11
     - pip install .
 
 test-job:
