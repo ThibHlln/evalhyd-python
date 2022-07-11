@@ -90,7 +90,14 @@ if __name__ == '__main__':
     test_suite = unittest.TestSuite()
 
     test_suite.addTests(
-        test_loader.loadTestsFromTestCase(TestMetrics))
+        test_loader.loadTestsFromTestCase(TestMetrics)
+    )
+    test_suite.addTests(
+        test_loader.loadTestsFromTestCase(TestDecomposition)
+    )
+    test_suite.addTests(
+        test_loader.loadTestsFromTestCase(TestMasking)
+    )
 
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(test_suite)
