@@ -1,4 +1,4 @@
-image: python:latest
+image: python:3.9.13
 
 build-job:
   stage: build
@@ -11,10 +11,12 @@ build-job:
     - python -m pip install numpy pybind11
     - python -m pip install .
     # make sure package can be imported
-    - python -c "import evalhyd"
+    - python -c "import evalhyd;print(evalhyd.__doc__)"
 
 test-job:
   stage: test
   script:
+    # make sure package can be imported
+    - python -c "import evalhyd;print(evalhyd.__doc__)"
     # run test suite
     - (cd ./tests && python run_all_tests.py)
