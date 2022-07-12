@@ -44,5 +44,6 @@ setup(
     long_description='An evaluator for streamflow predictions.',
     ext_modules=ext_modules,
     cmdclass={'build_ext': build_ext},
+    extras_require={"tests": "numpy>=1.16"},
     zip_safe=False,
 )
