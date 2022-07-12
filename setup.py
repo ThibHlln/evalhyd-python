@@ -7,6 +7,17 @@ import setuptools
 __version__ = '0.0.1'
 
 
+def read_requirements(filename):
+    requires = []
+    with open(filename, 'r') as fr:
+        for line in fr:
+            package = line.strip()
+            if package:
+                requires.append(package)
+
+    return requires
+
+
 class get_pybind_include(object):
     """Helper class to determine the pybind11 include path
 
@@ -120,7 +131,7 @@ setup(
     description='Python bindings for EvalHyd',
     long_description='An evaluator for streamflow predictions.',
     ext_modules=ext_modules,
-    install_requires=['pybind11>=2.0.1', 'numpy'],
+    install_requires=read_requirements('requirements.txt'),
     cmdclass={'build_ext': BuildExt},
     zip_safe=False,
 )
