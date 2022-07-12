@@ -8,7 +8,7 @@ test-evalhyd-python:
     # print Python version
     - python --version
     # compile and install package
-    - python -m pip --user install .
+    - python -m pip install --user .
     # make sure package can be imported and check version
     - python -c "import evalhyd;print(evalhyd.__version__)"
     # run test suite
