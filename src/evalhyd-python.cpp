@@ -1,6 +1,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#define STRINGIFY(x) #x
+#define MACRO_STRINGIFY(x) STRINGIFY(x)
+
 #define FORCE_IMPORT_ARRAY
 #include <xtensor-python/pytensor.hpp>
 
@@ -203,4 +206,10 @@ PYBIND11_MODULE(evalhyd, m)
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
         py::arg("q_thr") = empty_1d, py::arg("t_msk") = empty_2d
     );
+
+#ifdef VERSION_INFO
+    m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
+#else
+    m.attr("__version__") = "dev";
+#endif
 }
