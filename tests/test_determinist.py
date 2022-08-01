@@ -48,13 +48,11 @@ class TestMetrics(unittest.TestCase):
 
     def test_metrics_1d(self):
         for metric in self.expected.keys():
-            # TODO: fix failure for KGE and KGEPRIME with 1D pytensors
-            if metric not in ('KGE', 'KGEPRIME'):
-                with self.subTest(metric=metric):
-                    numpy.testing.assert_almost_equal(
-                        evalhyd.evald(_obs[0], _prd[0], [metric])[0],
-                        self.expected[metric][0]
-                    )
+            with self.subTest(metric=metric):
+                numpy.testing.assert_almost_equal(
+                    evalhyd.evald(_obs[0], _prd[0], [metric])[0],
+                    self.expected[metric][0]
+                )
 
 
 class TestTransform(unittest.TestCase):
