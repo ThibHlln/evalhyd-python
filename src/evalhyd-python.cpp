@@ -158,10 +158,6 @@ PYBIND11_MODULE(evalhyd, m)
     );
 
     // probabilistic evaluation
-    py::list empty_1d;
-    py::list empty_2d;
-    empty_2d.append(py::list());
-
     m.def(
         "evalp", evalhyd::evalp,
         R"pbdoc(
@@ -204,7 +200,8 @@ PYBIND11_MODULE(evalhyd, m)
                     shape: [(sites, lead times, subsets, {quantiles,} {thresholds,} {components}), ...]
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
-        py::arg("q_thr") = empty_1d, py::arg("t_msk") = empty_2d
+        py::arg("q_thr") = xt::pytensor<double, 2>({0}),
+        py::arg("t_msk") = xt::pytensor<bool, 3>({0})
     );
 
 #ifdef VERSION_INFO

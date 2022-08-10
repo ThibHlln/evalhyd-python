@@ -38,7 +38,7 @@ class TestMetrics(unittest.TestCase):
     }
 
     def test_threshold_metrics(self):
-        thr = [690, 534, 445]
+        thr = numpy.array([[690, 534, 445]])
         for metric in self.expected_thr.keys():
             with self.subTest(metric=metric):
                 numpy.testing.assert_almost_equal(
@@ -58,7 +58,7 @@ class TestMetrics(unittest.TestCase):
 class TestDecomposition(unittest.TestCase):
 
     def test_brier_calibration_refinement(self):
-        thr = [690, 534, 445]
+        thr = numpy.array([[690, 534, 445]])
         bs, = evalhyd.evalp(_obs, _prd, ["BS"], thr)
         bs_crd, = evalhyd.evalp(_obs, _prd, ["BS_CRD"], thr)
         numpy.testing.assert_almost_equal(
@@ -66,7 +66,7 @@ class TestDecomposition(unittest.TestCase):
         )
 
     def test_brier_likelihood_base_rate(self):
-        thr = [690, 534, 445]
+        thr = numpy.array([[690, 534, 445]])
         bs, = evalhyd.evalp(_obs, _prd, ["BS"], thr)
         bs_lbd, = evalhyd.evalp(_obs, _prd, ["BS_LBD"], thr)
         numpy.testing.assert_almost_equal(
@@ -77,8 +77,8 @@ class TestDecomposition(unittest.TestCase):
 class TestMasking(unittest.TestCase):
 
     def test_masks(self):
-        msk = numpy.ones(_obs.shape, dtype=bool)
-        msk[:, :99] = False
+        msk = numpy.ones((1, *_obs.shape), dtype=bool)
+        msk[..., :99] = False
         numpy.testing.assert_almost_equal(
             evalhyd.evalp(_obs, _prd, ["QS"], t_msk=msk)[0],
             evalhyd.evalp(_obs[..., 99:], _prd[..., 99:], ["QS"])[0]
