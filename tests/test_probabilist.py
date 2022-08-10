@@ -16,17 +16,19 @@ class TestMetrics(unittest.TestCase):
 
     expected_thr = {
         'BS':
-            [[[[0.1081672, 0.073954980, 0.08681672]]]],
+            [[[[0.1081672, 0.073954980, 0.08681672, numpy.nan]]]],
         'BSS':
-            [[[[0.56240422, 0.66612211, 0.56288391]]]],
+            [[[[0.56240422, 0.66612211, 0.56288391, numpy.nan]]]],
         'BS_CRD':
             [[[[[0.01335634, 0.15237434, 0.24718520],
                 [0.00550861, 0.15305671, 0.22150309],
-                [0.00753750, 0.11933328, 0.19861250]]]]],
+                [0.00753750, 0.11933328, 0.19861250],
+                [numpy.nan, numpy.nan, numpy.nan]]]]],
         'BS_LBD':
             [[[[[0.01244569, 0.14933386, 0.24505537],
                 [0.00801337, 0.14745568, 0.21339730],
-                [0.01719462, 0.10479711, 0.17441921]]]]]
+                [0.01719462, 0.10479711, 0.17441921],
+                [numpy.nan, numpy.nan, numpy.nan]]]]]
     }
 
     expected_qtl = {
@@ -38,7 +40,7 @@ class TestMetrics(unittest.TestCase):
     }
 
     def test_threshold_metrics(self):
-        thr = numpy.array([[690, 534, 445]])
+        thr = numpy.array([[690, 534, 445, numpy.nan]])
         for metric in self.expected_thr.keys():
             with self.subTest(metric=metric):
                 numpy.testing.assert_almost_equal(
