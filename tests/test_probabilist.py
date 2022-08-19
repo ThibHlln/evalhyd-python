@@ -87,6 +87,34 @@ class TestMasking(unittest.TestCase):
         )
 
 
+class TestMissingData(unittest.TestCase):
+
+    def test_nan(self):
+        thr = numpy.array([[690, 534, 445, numpy.nan]])
+        for metric in ("BS", "BSS", "BS_CRD", "BS_LBD", "QS", "CRPS"):
+            with self.subTest(metric=metric):
+                numpy.testing.assert_almost_equal(
+                    # missing data flagged as NaN
+                    evalhyd.evalp(
+                        [[4.7, numpy.nan, 5.5, 2.7, 4.1]],
+                        [[[[5.3, 4.2, 5.7, 2.3, numpy.nan],
+                           [4.3, 4.2, 4.7, 4.3, numpy.nan],
+                           [5.3, 5.2, 5.7, 2.3, numpy.nan]]]],
+                        [metric],
+                        thr
+                    )[0],
+                    # missing data pairwise deleted from series
+                    evalhyd.evalp(
+                        [[4.7, 5.5, 2.7]],
+                        [[[[5.3, 5.7, 2.3],
+                           [4.3, 4.7, 4.3],
+                           [5.3, 5.7, 2.3]]]],
+                        [metric],
+                        thr
+                    )[0]
+                )
+
+
 if __name__ == '__main__':
     test_loader = unittest.TestLoader()
     test_suite = unittest.TestSuite()
@@ -99,6 +127,9 @@ if __name__ == '__main__':
     )
     test_suite.addTests(
         test_loader.loadTestsFromTestCase(TestMasking)
+    )
+    test_suite.addTests(
+        test_loader.loadTestsFromTestCase(TestMissingData)
     )
 
     runner = unittest.TextTestRunner(verbosity=2)
