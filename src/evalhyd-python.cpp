@@ -30,11 +30,19 @@ PYBIND11_MODULE(evalhyd, m)
             :Parameters:
 
                 q_obs: `numpy.ndarray`
-                    1D array of streamflow observations.
+                    1D array of streamflow observations. Time steps with
+                    missing observations must be assigned `numpy.nan`
+                    values. Those time steps will be ignored both in
+                    the observations and in the predictions before the
+                    *metrics* are computed.
                     shape: (time,)
 
                 q_prd: `numpy.ndarray`
-                    1D array of streamflow predictions.
+                    1D array of streamflow predictions. Time steps with
+                    missing predictions must be assigned `numpy.nan`
+                    values. Those time steps will be ignored both in
+                    the observations and in the predictions before the
+                    *metrics* are computed.
                     shape: (time,)
 
                 metrics: `List[str]`
@@ -97,11 +105,19 @@ PYBIND11_MODULE(evalhyd, m)
             :Parameters:
 
                 q_obs: `numpy.ndarray`
-                    2D array of streamflow observations.
-                    shape: (1, time)
+                    2D array of streamflow observations. Time steps with
+                    missing observations must be assigned `numpy.nan`
+                    values. Those time steps will be ignored both in
+                    the observations and in the predictions before the
+                    *metrics* are computed.
+                    shape: (1+, time)
 
                 q_prd: `numpy.ndarray`
-                    2D array of streamflow predictions.
+                    2D array of streamflow predictions. Time steps with
+                    missing predictions must be assigned `numpy.nan`
+                    values. Those time steps will be ignored both in
+                    the observations and in the predictions before the
+                    *metrics* are computed.
                     shape: (1+, time)
 
                 metrics: `List[str]`
@@ -167,17 +183,17 @@ PYBIND11_MODULE(evalhyd, m)
 
                 q_obs: `numpy.ndarray`
                     2D array of streamflow observations. Time steps with
-                    missing observation must be assigned `numpy.nan`
-                    values. Those time steps will be pairwise ignored in
-                    the observations and the predictions before the
+                    missing observations must be assigned `numpy.nan`
+                    values. Those time steps will be ignored both in
+                    the observations and in the predictions before the
                     *metrics* are computed.
                     shape: (sites, time)
 
                 q_prd: `numpy.ndarray`
                     4D array of streamflow predictions. Time steps with
-                    missing prediction must be assigned `numpy.nan`
-                    values. Those time steps will be pairwise ignored in
-                    the observations and the predictions before the
+                    missing predictions must be assigned `numpy.nan`
+                    values. Those time steps will be ignored both in
+                    the observations and in the predictions before the
                     *metrics* are computed.
                     shape: (sites, lead times, members, time)
 

@@ -85,6 +85,33 @@ class TestTransform(unittest.TestCase):
         )
 
 
+class TestMissingData(unittest.TestCase):
+
+    def test_nan(self):
+        for metric in ('RMSE', 'NSE', 'KGE', 'KGEPRIME'):
+            with self.subTest(metric=metric):
+                numpy.testing.assert_almost_equal(
+                    # missing data flagged as NaN
+                    evalhyd.evald(
+                        [[4.7, numpy.nan, 5.5, 2.7, 4.1]],
+                        [[5.3, 4.2, 5.7, 2.3, numpy.nan],
+                         [numpy.nan, 4.2, 4.7, 4.3, 3.3],
+                         [5.3, 5.2, 5.7, numpy.nan, 3.9]],
+                        [metric]
+                    )[0],
+                    # missing data pairwise deleted from series
+                    evalhyd.evald(
+                        [[4.7, 5.5, 2.7],
+                         [5.5, 2.7, 4.1],
+                         [4.7, 5.5, 4.1]],
+                        [[5.3, 5.7, 2.3],
+                         [4.7, 4.3, 3.3],
+                         [5.3, 5.7, 3.9]],
+                        [metric]
+                    )[0]
+                )
+
+
 if __name__ == '__main__':
     test_loader = unittest.TestLoader()
     test_suite = unittest.TestSuite()
@@ -94,6 +121,9 @@ if __name__ == '__main__':
     )
     test_suite.addTests(
         test_loader.loadTestsFromTestCase(TestTransform)
+    )
+    test_suite.addTests(
+        test_loader.loadTestsFromTestCase(TestMissingData)
     )
 
     runner = unittest.TextTestRunner(verbosity=2)
