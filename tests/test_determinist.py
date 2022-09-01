@@ -85,6 +85,17 @@ class TestTransform(unittest.TestCase):
         )
 
 
+class TestMasking(unittest.TestCase):
+
+    def test_masks(self):
+        msk = numpy.ones(_obs.shape, dtype=bool)
+        msk[..., :99] = False
+        numpy.testing.assert_almost_equal(
+            evalhyd.evald(_obs, _prd, ["NSE"], t_msk=msk)[0],
+            evalhyd.evald(_obs[..., 99:], _prd[..., 99:], ["NSE"])[0]
+        )
+
+
 class TestMissingData(unittest.TestCase):
 
     def test_nan(self):
@@ -121,6 +132,9 @@ if __name__ == '__main__':
     )
     test_suite.addTests(
         test_loader.loadTestsFromTestCase(TestTransform)
+    )
+    test_suite.addTests(
+        test_loader.loadTestsFromTestCase(TestMasking)
     )
     test_suite.addTests(
         test_loader.loadTestsFromTestCase(TestMissingData)

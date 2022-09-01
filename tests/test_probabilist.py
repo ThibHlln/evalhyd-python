@@ -79,7 +79,7 @@ class TestDecomposition(unittest.TestCase):
 class TestMasking(unittest.TestCase):
 
     def test_masks(self):
-        msk = numpy.ones((1, *_obs.shape), dtype=bool)
+        msk = numpy.ones((_obs.shape[0], 1, _obs.shape[1]), dtype=bool)
         msk[..., :99] = False
         numpy.testing.assert_almost_equal(
             evalhyd.evalp(_obs, _prd, ["QS"], t_msk=msk)[0],

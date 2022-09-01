@@ -23,7 +23,7 @@ PYBIND11_MODULE(evalhyd, m)
 
     // deterministic evaluation
     m.def(
-        "evald", evalhyd::evald<xt::pytensor<double, 1>>,
+        "evald", evalhyd::evald<1>,
         R"pbdoc(
             Function to evaluate deterministic streamflow predictions.
 
@@ -95,10 +95,11 @@ PYBIND11_MODULE(evalhyd, m)
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
         py::arg("transform")="none", py::arg("exponent")=1,
-        py::arg("epsilon")=-9
+        py::arg("epsilon")=-9,
+        py::arg("t_msk") = xt::pytensor<bool, 1>({})
     );
     m.def(
-        "evald", evalhyd::evald<xt::pytensor<double, 2>>,
+        "evald", evalhyd::evald<2>,
         R"pbdoc(
             Function to evaluate deterministic streamflow predictions.
 
@@ -170,7 +171,8 @@ PYBIND11_MODULE(evalhyd, m)
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
         py::arg("transform")="none", py::arg("exponent")=1,
-        py::arg("epsilon")=-9
+        py::arg("epsilon")=-9,
+        py::arg("t_msk") = xt::pytensor<bool, 2>({0})
     );
 
     // probabilistic evaluation
