@@ -1,5 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <array>
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -47,7 +48,7 @@ PYBIND11_MODULE(evalhyd, m)
 
                 metrics: `List[str]`
                     The sequence of evaluation metrics to be computed.
-                    
+
                 transform: `str`, optional
                    The transformation to apply to both streamflow observations
                    and predictions prior to the calculation of the *metrics*.
@@ -94,9 +95,10 @@ PYBIND11_MODULE(evalhyd, m)
                     shape: [(components,)+]
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
-        py::arg("transform")="none", py::arg("exponent")=1,
-        py::arg("epsilon")=-9,
-        py::arg("t_msk") = xt::pytensor<bool, 1>({})
+        py::arg("transform") = "none", py::arg("exponent") = 1,
+        py::arg("epsilon") = -9,
+        py::arg("t_msk") = xt::pytensor<bool, 1>({}),
+        py::arg("m_cdt") = xt::pytensor<std::array<char, 32>, 1>({})
     );
     m.def(
         "evald", evalhyd::evald<2>,
@@ -170,9 +172,10 @@ PYBIND11_MODULE(evalhyd, m)
                     shape: [(1+, components), ...]
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
-        py::arg("transform")="none", py::arg("exponent")=1,
-        py::arg("epsilon")=-9,
-        py::arg("t_msk") = xt::pytensor<bool, 2>({0})
+        py::arg("transform") = "none", py::arg("exponent") = 1,
+        py::arg("epsilon") = -9,
+        py::arg("t_msk") = xt::pytensor<bool, 2>({0}),
+        py::arg("m_cdt") = xt::pytensor<std::array<char, 32>, 2>({0})
     );
 
     // probabilistic evaluation
@@ -227,7 +230,8 @@ PYBIND11_MODULE(evalhyd, m)
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
         py::arg("q_thr") = xt::pytensor<double, 2>({0}),
-        py::arg("t_msk") = xt::pytensor<bool, 3>({0})
+        py::arg("t_msk") = xt::pytensor<bool, 3>({0}),
+        py::arg("m_cdt") = xt::pytensor<std::array<char, 32>, 2>({0})
     );
 
 #ifdef VERSION_INFO

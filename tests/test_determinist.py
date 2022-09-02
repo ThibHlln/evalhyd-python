@@ -95,6 +95,17 @@ class TestMasking(unittest.TestCase):
             evalhyd.evald(_obs[..., 99:], _prd[..., 99:], ["NSE"])[0]
         )
 
+    def test_conditions(self):
+        cdt = numpy.array([["q{<2000,>3000}"]], dtype='|S32')
+
+        obs = _obs[..., (_obs[0] < 2000) | (_obs[0] > 3000)]
+        prd = _prd[..., (_obs[0] < 2000) | (_obs[0] > 3000)]
+
+        numpy.testing.assert_almost_equal(
+            evalhyd.evald(_obs, _prd, ["NSE"], m_cdt=cdt)[0],
+            evalhyd.evald(obs, prd, ["NSE"])[0]
+        )
+
 
 class TestMissingData(unittest.TestCase):
 
