@@ -36,7 +36,7 @@ class TestMetrics(unittest.TestCase):
             [[[[321.1607717,  294.3494105,  265.70418006,
                 236.15648446, 206.03965702]]]],
         'CRPS':
-            [[[207.8059391]]]
+            [[[176.63504823]]]
     }
 
     def test_threshold_metrics(self):
