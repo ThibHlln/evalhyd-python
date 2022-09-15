@@ -96,15 +96,31 @@ class TestMasking(unittest.TestCase):
         )
 
     def test_conditions(self):
-        cdt = numpy.array([["q{<2000,>3000}"]], dtype='|S32')
+        with self.subTest(condtions="observed streamflow values"):
+            cdt = numpy.array([["q_obs{<2000,>3000}"]], dtype='|S32')
 
-        obs = _obs[..., (_obs[0] < 2000) | (_obs[0] > 3000)]
-        prd = _prd[..., (_obs[0] < 2000) | (_obs[0] > 3000)]
+            msk = (_obs[0] < 2000) | (_obs[0] > 3000)
 
-        numpy.testing.assert_almost_equal(
-            evalhyd.evald(_obs, _prd, ["NSE"], m_cdt=cdt)[0],
-            evalhyd.evald(obs, prd, ["NSE"])[0]
-        )
+            obs = _obs[..., msk]
+            prd = _prd[..., msk]
+
+            numpy.testing.assert_almost_equal(
+                evalhyd.evald(_obs, _prd, ["NSE"], m_cdt=cdt)[0],
+                evalhyd.evald(obs, prd, ["NSE"])[0]
+            )
+
+        with self.subTest(condtions="observed streamflow statistics"):
+            cdt = numpy.array([["q_obs{>=median}"]], dtype='|S32')
+
+            msk = _obs[0] >= numpy.median(_obs)
+
+            obs = _obs[..., msk]
+            prd = _prd[..., msk]
+
+            numpy.testing.assert_almost_equal(
+                evalhyd.evald(_obs, _prd, ["NSE"], m_cdt=cdt)[0],
+                evalhyd.evald(obs, prd, ["NSE"])[0]
+            )
 
 
 class TestMissingData(unittest.TestCase):

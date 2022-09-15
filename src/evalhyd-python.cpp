@@ -252,14 +252,14 @@ PYBIND11_MODULE(evalhyd, m)
                     shape: (thresholds,)
 
                 t_msk: `numpy.ndarray`, optional
-                    3D array of masks to generate temporal subsets of the whole
+                    4D array of masks to generate temporal subsets of the whole
                     streamflow time series (where True/False is used for the
                     time steps to include/discard in a given subset). If not
                     provided, no subset is performed and only one set of metrics
                     is returned corresponding to the whole time series. If
                     provided, as many sets of metrics are returned as they are
                     masks provided.
-                    shape: (sites, subsets, time)
+                    shape: (sites, lead times, subsets, time)
 
                 m_cdt: `numpy.ndarray`, optional
                     2D array of conditions to generate temporal subsets. Each
@@ -281,7 +281,7 @@ PYBIND11_MODULE(evalhyd, m)
         )pbdoc",
         py::arg("q_obs"), py::arg("q_prd"), py::arg("metrics"),
         py::arg("q_thr") = xt::pytensor<double, 2>({0}),
-        py::arg("t_msk") = xt::pytensor<bool, 3>({0}),
+        py::arg("t_msk") = xt::pytensor<bool, 4>({0}),
         py::arg("m_cdt") = xt::pytensor<std::array<char, 32>, 2>({0})
     );
 

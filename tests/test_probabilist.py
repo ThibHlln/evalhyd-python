@@ -79,7 +79,7 @@ class TestDecomposition(unittest.TestCase):
 class TestMasking(unittest.TestCase):
 
     def test_masks(self):
-        msk = numpy.ones((_obs.shape[0], 1, _obs.shape[1]), dtype=bool)
+        msk = numpy.ones((_prd.shape[0], _prd.shape[1], 1, _prd.shape[3]), dtype=bool)
         msk[..., :99] = False
         numpy.testing.assert_almost_equal(
             evalhyd.evalp(_obs, _prd, ["QS"], t_msk=msk)[0],
@@ -87,15 +87,32 @@ class TestMasking(unittest.TestCase):
         )
 
     def test_conditions(self):
-        cdt = numpy.array([["q{<2000,>3000}"]], dtype='|S32')
+        with self.subTest(condtions="observed streamflow values"):
+            cdt = numpy.array([["q_obs{<2000,>3000}"]], dtype='|S32')
 
-        obs = _obs[..., (_obs[0] < 2000) | (_obs[0] > 3000)]
-        prd = _prd[..., (_obs[0] < 2000) | (_obs[0] > 3000)]
+            msk = (_obs[0] < 2000) | (_obs[0] > 3000)
 
-        numpy.testing.assert_almost_equal(
-            evalhyd.evalp(_obs, _prd, ["QS"], m_cdt=cdt)[0],
-            evalhyd.evalp(obs, prd, ["QS"])[0]
-        )
+            obs = _obs[..., msk]
+            prd = _prd[..., msk]
+
+            numpy.testing.assert_almost_equal(
+                evalhyd.evalp(_obs, _prd, ["QS"], m_cdt=cdt)[0],
+                evalhyd.evalp(obs, prd, ["QS"])[0]
+            )
+
+        with self.subTest(condtions="predicted streamflow statistics"):
+            cdt = numpy.array([["q_prd_median{<=quantile0.7}"]], dtype='|S32')
+
+            median = numpy.squeeze(numpy.median(_prd, 2))
+            msk = median <= numpy.quantile(median, 0.7)
+
+            obs = _obs[..., msk]
+            prd = _prd[..., msk]
+
+            numpy.testing.assert_almost_equal(
+                evalhyd.evalp(_obs, _prd, ["QS"], m_cdt=cdt)[0],
+                evalhyd.evalp(obs, prd, ["QS"])[0]
+            )
 
 
 class TestMissingData(unittest.TestCase):
