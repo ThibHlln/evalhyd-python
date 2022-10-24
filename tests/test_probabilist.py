@@ -16,27 +16,27 @@ class TestMetrics(unittest.TestCase):
 
     expected_thr = {
         'BS':
-            [[[[0.1081672, 0.073954980, 0.08681672, numpy.nan]]]],
+            [[[[[0.1081672, 0.073954980, 0.08681672, numpy.nan]]]]],
         'BSS':
-            [[[[0.56240422, 0.66612211, 0.56288391, numpy.nan]]]],
+            [[[[[0.56240422, 0.66612211, 0.56288391, numpy.nan]]]]],
         'BS_CRD':
-            [[[[[0.01335634, 0.15237434, 0.24718520],
-                [0.00550861, 0.15305671, 0.22150309],
-                [0.00753750, 0.11933328, 0.19861250],
-                [numpy.nan, numpy.nan, numpy.nan]]]]],
+            [[[[[[0.01335634, 0.15237434, 0.24718520],
+                 [0.00550861, 0.15305671, 0.22150309],
+                 [0.00753750, 0.11933328, 0.19861250],
+                 [numpy.nan, numpy.nan, numpy.nan]]]]]],
         'BS_LBD':
-            [[[[[0.01244569, 0.14933386, 0.24505537],
-                [0.00801337, 0.14745568, 0.21339730],
-                [0.01719462, 0.10479711, 0.17441921],
-                [numpy.nan, numpy.nan, numpy.nan]]]]]
+            [[[[[[0.01244569, 0.14933386, 0.24505537],
+                 [0.00801337, 0.14745568, 0.21339730],
+                 [0.01719462, 0.10479711, 0.17441921],
+                 [numpy.nan, numpy.nan, numpy.nan]]]]]]
     }
 
     expected_qtl = {
         'QS':
-            [[[[321.1607717,  294.3494105,  265.70418006,
-                236.15648446, 206.03965702]]]],
+            [[[[[321.1607717,  294.3494105,  265.70418006,
+                 236.15648446, 206.03965702]]]]],
         'CRPS':
-            [[[176.63504823]]]
+            [[[[176.63504823]]]]
     }
 
     def test_threshold_metrics(self):
@@ -143,6 +143,50 @@ class TestMissingData(unittest.TestCase):
                 )
 
 
+class TestUncertainty(unittest.TestCase):
+
+    def test_bootstrap(self):
+        thr = numpy.array([[690, 534, 445, numpy.nan]])
+
+        prd_1yr = numpy.genfromtxt(
+            "./data/q_prd_1yr.csv", delimiter=',', skip_header=1
+        )
+        obs_1yr = numpy.genfromtxt(
+            "./data/q_obs_1yr.csv", delimiter=',', skip_header=1
+        )
+        dts_1yr = numpy.genfromtxt(
+            "./data/q_obs_1yr.csv", delimiter=',', dtype=str, skip_footer=1
+        )
+
+        obs_3yrs = numpy.hstack((obs_1yr,) * 3)
+        prd_3yrs = numpy.hstack((prd_1yr,) * 3)
+
+        for metric in ("BS", "BSS", "BS_CRD", "BS_LBD", "QS", "CRPS"):
+            with self.subTest(metric=metric):
+                numpy.testing.assert_almost_equal(
+                    # bootstrap with only one year of data
+                    # (compare last sample only to have matching dimensions)
+                    evalhyd.evalp(
+                        obs_1yr[numpy.newaxis],
+                        prd_1yr[numpy.newaxis, numpy.newaxis],
+                        [metric],
+                        q_thr=thr,
+                        bootstrap={
+                            "n_samples": 10, "len_sample": 3, "summary": 0
+                        },
+                        dts=dts_1yr
+                    )[0][:, :, :, [0]],
+                    # repeat year of data three times to correspond to a
+                    # bootstrap sample of length 3
+                    evalhyd.evalp(
+                        obs_3yrs[numpy.newaxis],
+                        prd_3yrs[numpy.newaxis, numpy.newaxis],
+                        [metric],
+                        q_thr=thr
+                    )[0]
+                )
+
+
 if __name__ == '__main__':
     test_loader = unittest.TestLoader()
     test_suite = unittest.TestSuite()
@@ -158,6 +202,9 @@ if __name__ == '__main__':
     )
     test_suite.addTests(
         test_loader.loadTestsFromTestCase(TestMissingData)
+    )
+    test_suite.addTests(
+        test_loader.loadTestsFromTestCase(TestUncertainty)
     )
 
     runner = unittest.TextTestRunner(verbosity=2)
