@@ -98,9 +98,7 @@ PYBIND11_MODULE(evalhyd, m)
                    function with a negative exponent (since none are defined
                    for 0). If not provided (or set to default value -9),
                    one hundredth of the mean of the streamflow observations
-                   is used as value for epsilon, as recommended by
-                   `Pushpalatha et al. (2012)
-                   <https://doi.org/10.1016/j.jhydrol.2011.11.055>`_.
+                   is used as value for epsilon.
 
                 t_msk: `numpy.ndarray`, optional
                    1D array of mask(s) used to generate temporal subsets of
@@ -204,9 +202,7 @@ PYBIND11_MODULE(evalhyd, m)
                    function with a negative exponent (since none are defined
                    for 0). If not provided (or set to default value -9),
                    one hundredth of the mean of the streamflow observations
-                   is used as value for epsilon, as recommended by
-                   `Pushpalatha et al. (2012)
-                   <https://doi.org/10.1016/j.jhydrol.2011.11.055>`_.
+                   is used as value for epsilon.
 
                 t_msk: `numpy.ndarray`, optional
                    2D array of mask(s) used to generate temporal subsets of
