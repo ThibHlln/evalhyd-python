@@ -83,22 +83,6 @@ PYBIND11_MODULE(evalhyd, m)
                 transform: `str`, optional
                    The transformation to apply to both streamflow observations
                    and predictions prior to the calculation of the *metrics*.
-                   The options are listed in the table below.
-
-                   ========================  ==================================
-                   transformations           details
-                   ========================  ==================================
-                   ``"sqrt"``                The square root function
-                                             **f(Q) = √Q** is applied.
-                   ``"pow"``                 The power function
-                                             **f(Q) = Qⁿ** is applied (where
-                                             the power **n** can be set through
-                                             the *exponent* parameter).
-                   ``"inv"``                 The reciprocal function
-                                             **f(Q) = 1/Q** is applied.
-                   ``"log"``                 The natural logarithm function
-                                             **f(Q) = ln(Q)** is applied.
-                   ========================  ==================================
 
                 exponent: `float`, optional
                    The value of the exponent n to use when the *transform* is
@@ -142,7 +126,7 @@ PYBIND11_MODULE(evalhyd, m)
                 bootstrap: `dict`, optional
                    Parameters for the bootstrapping method used to estimate the
                    sampling uncertainty in the evaluation of the predictions.
-                   Two parameters are mandatory ('n_samples' the number of
+                   Three parameters are mandatory ('n_samples' the number of
                    random samples, 'len_sample' the length of one sample in
                    number of years, and 'summary' the statistics to return to
                    characterise the sampling distribution), and one parameter
@@ -157,6 +141,7 @@ PYBIND11_MODULE(evalhyd, m)
                    (e.g. the 21st of May 2007 at 4 in the afternoon is
                    "2007-05-21 16:00:00"). If provided, it is only used if
                    *bootstrap* is also provided.
+                   shape: (time,)
 
             :Returns:
 
@@ -204,22 +189,6 @@ PYBIND11_MODULE(evalhyd, m)
                 transform: `str`, optional
                    The transformation to apply to both streamflow observations
                    and predictions prior to the calculation of the *metrics*.
-                   The options are listed in the table below.
-
-                   ========================  ==================================
-                   transformations           details
-                   ========================  ==================================
-                   ``"sqrt"``                The square root function
-                                             **f(Q) = √Q** is applied.
-                   ``"pow"``                 The power function
-                                             **f(Q) = Qⁿ** is applied (where
-                                             the power **n** can be set through
-                                             the *exponent* parameter).
-                   ``"inv"``                 The reciprocal function
-                                             **f(Q) = 1/Q** is applied.
-                   ``"log"``                 The natural logarithm function
-                                             **f(Q) = ln(Q)** is applied.
-                   ========================  ==================================
 
                 exponent: `float`, optional
                    The value of the exponent n to use when the *transform* is
@@ -263,7 +232,7 @@ PYBIND11_MODULE(evalhyd, m)
                 bootstrap: `dict`, optional
                    Parameters for the bootstrapping method used to estimate the
                    sampling uncertainty in the evaluation of the predictions.
-                   Two parameters are mandatory ('n_samples' the number of
+                   Three parameters are mandatory ('n_samples' the number of
                    random samples, 'len_sample' the length of one sample in
                    number of years, and 'summary' the statistics to return to
                    characterise the sampling distribution), and one parameter
@@ -278,6 +247,7 @@ PYBIND11_MODULE(evalhyd, m)
                    (e.g. the 21st of May 2007 at 4 in the afternoon is
                    "2007-05-21 16:00:00"). If provided, it is only used if
                    *bootstrap* is also provided.
+                   shape: (time,)
 
             :Returns:
 
@@ -355,7 +325,7 @@ PYBIND11_MODULE(evalhyd, m)
                 bootstrap: `dict`, optional
                    Parameters for the bootstrapping method used to estimate the
                    sampling uncertainty in the evaluation of the predictions.
-                   Two parameters are mandatory ('n_samples' the number of
+                   Three parameters are mandatory ('n_samples' the number of
                    random samples, 'len_sample' the length of one sample in
                    number of years, and 'summary' the statistics to return to
                    characterise the sampling distribution), and one parameter
@@ -370,6 +340,7 @@ PYBIND11_MODULE(evalhyd, m)
                    (e.g. the 21st of May 2007 at 4 in the afternoon is
                    "2007-05-21 16:00:00"). If provided, it is only used if
                    *bootstrap* is also provided.
+                   shape: (time,)
 
             :Returns:
 
