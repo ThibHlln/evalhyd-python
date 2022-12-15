@@ -1,3 +1,0 @@
-[submodule "deps/evalhyd"]
-	path = deps/evalhyd
-	url = https://gitlab.irstea.fr/HYCAR-Hydro/evalhyd/evalhyd.git
