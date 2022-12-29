@@ -10,7 +10,7 @@ dependencies:
   # Host dependencies
   - python
   - numpy
-  - pybind11==2.4.3
+  - pybind11
   - xtensor-python==0.26.1
 #TODO:  - evalhyd==0.0.1
   # Test dependencies
