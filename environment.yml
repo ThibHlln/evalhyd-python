@@ -1,0 +1,17 @@
+channels:
+  - conda-forge
+dependencies:
+  # Build dependencies
+  - cxx-compiler
+  - c-compiler
+  - cmake
+  - make
+  - scikit-build
+  # Host dependencies
+  - python
+  - numpy
+  - pybind11
+  - xtensor-python
+#TODO:  - evalhyd
+  # Test dependencies
+  - numpy
