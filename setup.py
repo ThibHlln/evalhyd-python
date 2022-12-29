@@ -13,10 +13,7 @@ __version__ = '0.0.1'
 ext_modules = [
     Pybind11Extension(
         "evalhyd",
-        ['src/evalhyd-python.cpp',
-         'deps/evalhyd/src/probabilist/evaluator_brier.cpp',
-         'deps/evalhyd/src/probabilist/evaluator_elements.cpp',
-         'deps/evalhyd/src/probabilist/evaluator_quantiles.cpp'],
+        ['src/evalhyd-python.cpp'],
         include_dirs=[
             numpy.get_include(),
             os.path.join(os.getcwd(), 'deps', 'evalhyd', 'deps', 'xtl',
