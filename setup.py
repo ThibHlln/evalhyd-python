@@ -1,7 +1,8 @@
 import sys
 import os
+import subprocess
+import shutil
 
-from pybind11 import get_cmake_dir
 from pybind11.setup_helpers import Pybind11Extension, build_ext
 from setuptools import setup
 import numpy
@@ -10,27 +11,61 @@ import numpy
 __version__ = '0.0.1'
 
 
+# vendor dependencies (unless told otherwise via environment variable)
+def git_clone(*args):
+    r = subprocess.run(
+        ['git', 'clone', *args, '-c', 'advice.detachedHead=false'],
+        capture_output=True
+    )
+    if r.returncode != 0:
+        raise RuntimeError(r.stderr.decode('utf-8'))
+
+
+deps = [
+    ('xtl', '0.7.0',
+     'https://github.com/xtensor-stack/xtl'),
+    ('xtensor', '0.24.0',
+     'https://github.com/xtensor-stack/xtensor'),
+    ('xtensor-python', '0.26.1',
+     'https://github.com/xtensor-stack/xtensor-python'),
+    ('evalhyd', 'dev',
+     'https://gitlab.irstea.fr/HYCAR-Hydro/evalhyd/evalhyd')
+]
+
+deps_include_dirs = []
+for dep, version, url in deps:
+    if not os.getenv(f"EVALHYD_PYTHON_VENDOR_{dep.upper().replace('-', '_')}") == 'FALSE':
+        # remove existing dependency if it exists
+        dir_path = os.path.join(os.getcwd(), 'deps', dep)
+        if os.path.exists(dir_path) and os.path.isdir(dir_path):
+            shutil.rmtree(dir_path)
+            print(f"removed existing {dep}")
+
+        # fetch dependency
+        git_clone(url, f'deps/{dep}', '--branch', version)
+        print(f"vendored {dep} {version}")
+
+        # register dependency headers
+        deps_include_dirs.append(os.path.join(dir_path, 'include'))
+
+
+# configure Python extension
 ext_modules = [
     Pybind11Extension(
         "evalhyd",
         ['src/evalhyd-python.cpp'],
         include_dirs=[
             numpy.get_include(),
-            os.path.join(os.getcwd(), 'deps', 'evalhyd', 'deps', 'xtl',
-                         'include'),
-            os.path.join(os.getcwd(), 'deps', 'evalhyd', 'deps', 'xtensor',
-                         'include'),
-            os.path.join(os.getcwd(), 'deps', 'xtensor-python', 'include'),
-            os.path.join(os.getcwd(), 'deps', 'evalhyd', 'include'),
-            os.path.join(os.getcwd(), 'deps', 'evalhyd', 'src'),
             os.path.join(sys.prefix, 'include'),
-            os.path.join(sys.prefix, 'Library', 'include')
+            os.path.join(sys.prefix, 'Library', 'include'),
+            *deps_include_dirs
         ],
         language='c++',
-        define_macros=[('VERSION_INFO', __version__)],
+        define_macros=[('VERSION_INFO', __version__)]
     ),
 ]
 
+# build Python extension and install Python package
 setup(
     name='evalhyd-python',
     version=__version__,
