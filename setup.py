@@ -1,6 +1,7 @@
 import sys
 import os
 import subprocess
+import stat
 import shutil
 
 from pybind11.setup_helpers import Pybind11Extension, build_ext
@@ -21,6 +22,14 @@ def git_clone(*args):
         raise RuntimeError(r.stderr.decode('utf-8'))
 
 
+def remove_readonly(func, path, exc):
+    # fix for Windows: change access permission for read-only files
+    # so that they can be removed
+    if not os.access(path, os.W_OK):
+        os.chmod(path, stat.S_IWUSR)
+        func(path)
+
+
 deps = [
     ('xtl', '0.7.0',
      'https://github.com/xtensor-stack/xtl'),
@@ -38,7 +47,7 @@ for dep, version, url in deps:
         # remove existing dependency if it exists
         dir_path = os.path.join(os.getcwd(), 'deps', dep)
         if os.path.exists(dir_path) and os.path.isdir(dir_path):
-            shutil.rmtree(dir_path)
+            shutil.rmtree(dir_path, onerror=remove_readonly)
             print(f"removed existing {dep}")
 
         # fetch dependency
