@@ -6,7 +6,6 @@
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
 
 #define FORCE_IMPORT_ARRAY
-#include <xtensor/xexpression.hpp>
 #include <xtensor/xview.hpp>
 #include <xtensor-python/pytensor.hpp>
 
