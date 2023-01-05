@@ -61,8 +61,8 @@ for dep, version, url in deps:
 # configure Python extension
 ext_modules = [
     Pybind11Extension(
-        "evalhyd",
-        ['src/evalhyd-python.cpp'],
+        "evalhyd.core",
+        ['evalhyd/src/core.cpp'],
         include_dirs=[
             numpy.get_include(),
             os.path.join(sys.prefix, 'include'),
@@ -83,8 +83,9 @@ setup(
     url='https://gitlab.irstea.fr/hycar-hydro/evalhyd/evalhyd-python',
     description='Python bindings for EvalHyd',
     long_description='An evaluator for streamflow predictions.',
+    packages=["evalhyd"],
     ext_modules=ext_modules,
     cmdclass={'build_ext': build_ext},
-    extras_require={"tests": "numpy>=1.16"},
+    extras_require={'tests': 'numpy>=1.16'},
     zip_safe=False,
 )
