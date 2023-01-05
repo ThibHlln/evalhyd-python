@@ -87,7 +87,7 @@ class TestMasking(unittest.TestCase):
         )
 
     def test_conditions(self):
-        with self.subTest(condtions="observed streamflow values"):
+        with self.subTest(conditions="observed streamflow values"):
             cdt = numpy.array([["q_obs{<2000,>3000}"]], dtype='|S32')
 
             msk = (_obs[0] < 2000) | (_obs[0] > 3000)
@@ -100,7 +100,7 @@ class TestMasking(unittest.TestCase):
                 evalhyd.evalp(obs, prd, ["QS"])[0]
             )
 
-        with self.subTest(condtions="predicted streamflow statistics"):
+        with self.subTest(conditions="predicted streamflow statistics"):
             cdt = numpy.array([["q_prd_median{<=quantile0.7}"]], dtype='|S32')
 
             median = numpy.squeeze(numpy.median(_prd, 2))
