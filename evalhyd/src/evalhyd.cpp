@@ -72,7 +72,7 @@ auto evalp(
 }
 
 // Python Module and Docstrings
-PYBIND11_MODULE(core, m)
+PYBIND11_MODULE(_evalhyd, m)
 {
     xt::import_numpy();
 

@@ -61,8 +61,8 @@ for dep, version, url in deps:
 # configure Python extension
 ext_modules = [
     Pybind11Extension(
-        "evalhyd.core",
-        ['evalhyd/src/core.cpp'],
+        "evalhyd._evalhyd",
+        ['evalhyd/src/evalhyd.cpp'],
         include_dirs=[
             numpy.get_include(),
             os.path.join(sys.prefix, 'include'),

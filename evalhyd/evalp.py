@@ -1,7 +1,8 @@
 from typing import List, Dict
 from numpy import dtype
 from numpy.typing import NDArray
-import evalhyd.core
+
+from ._evalhyd import _evalp
 
 
 def evalp(q_obs: NDArray[dtype('float64')],
@@ -13,6 +14,7 @@ def evalp(q_obs: NDArray[dtype('float64')],
           bootstrap: Dict[str, int] = None,
           dts: List[str] = None) -> List[NDArray[dtype('float64')]]:
     """Function to evaluate probabilist streamflow predictions"""
+
     # required arguments
     kwargs = {
         'q_obs': q_obs,
@@ -32,4 +34,4 @@ def evalp(q_obs: NDArray[dtype('float64')],
     if dts is not None:
         kwargs['dts'] = dts
 
-    return evalhyd.core._evalp(**kwargs)
+    return _evalp(**kwargs)

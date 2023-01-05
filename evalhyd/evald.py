@@ -1,7 +1,8 @@
 from typing import List, Dict
 from numpy import dtype
 from numpy.typing import NDArray
-import evalhyd.core
+
+from ._evalhyd import _evald
 
 
 def evald(q_obs: NDArray[dtype('float64')],
@@ -15,6 +16,7 @@ def evald(q_obs: NDArray[dtype('float64')],
           bootstrap: Dict[str, int] = None,
           dts: List[str] = None) -> List[NDArray[dtype('float64')]]:
     """Function to evaluate determinist streamflow predictions"""
+
     # required arguments
     kwargs = {
         # convect 1D array into 2D array view
@@ -39,4 +41,4 @@ def evald(q_obs: NDArray[dtype('float64')],
     if dts is not None:
         kwargs['dts'] = dts
 
-    return evalhyd.core._evald(**kwargs)
+    return _evald(**kwargs)
