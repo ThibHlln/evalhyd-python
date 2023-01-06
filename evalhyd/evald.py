@@ -1,6 +1,6 @@
 from typing import List, Dict
 from numpy import dtype
-from numpy.typing import NDArray
+from numpy.typing import NDArray, ArrayLike
 
 try:
     from ._evalhyd import _evald
@@ -15,9 +15,9 @@ def evald(q_obs: NDArray[dtype('float64')],
           exponent: float = None,
           epsilon: float = None,
           t_msk: NDArray[dtype('bool')] = None,
-          m_cdt: NDArray[dtype('S32')] = None,
+          m_cdt: ArrayLike = None,
           bootstrap: Dict[str, int] = None,
-          dts: List[str] = None) -> List[NDArray[dtype('float64')]]:
+          dts: ArrayLike = None) -> List[NDArray[dtype('float64')]]:
     """Function to evaluate deterministic streamflow predictions"""
 
     # required arguments
