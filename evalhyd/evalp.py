@@ -16,7 +16,7 @@ def evalp(q_obs: NDArray[dtype('float64')],
           m_cdt: NDArray[dtype('S32')] = None,
           bootstrap: Dict[str, int] = None,
           dts: List[str] = None) -> List[NDArray[dtype('float64')]]:
-    """Function to evaluate probabilist streamflow predictions"""
+    """Function to evaluate probabilistic streamflow predictions"""
 
     # required arguments
     kwargs = {

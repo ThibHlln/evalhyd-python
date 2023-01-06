@@ -18,11 +18,11 @@ def evald(q_obs: NDArray[dtype('float64')],
           m_cdt: NDArray[dtype('S32')] = None,
           bootstrap: Dict[str, int] = None,
           dts: List[str] = None) -> List[NDArray[dtype('float64')]]:
-    """Function to evaluate determinist streamflow predictions"""
+    """Function to evaluate deterministic streamflow predictions"""
 
     # required arguments
     kwargs = {
-        # convect 1D array into 2D array view
+        # convert 1D array into 2D array view
         'q_obs': q_obs.reshape(1, q_obs.size) if q_obs.ndim == 1 else q_obs,
         'q_prd': q_prd.reshape(1, q_prd.size) if q_prd.ndim == 1 else q_prd,
         'metrics': metrics
