@@ -81,9 +81,14 @@ class TestMasking(unittest.TestCase):
     def test_masks(self):
         msk = numpy.ones((_prd.shape[0], _prd.shape[1], 1, _prd.shape[3]), dtype=bool)
         msk[..., :99] = False
+
+        # TODO: figure out why passing views would not work
+        obs = _obs[..., 99:].copy()
+        prd = _prd[..., 99:].copy()
+
         numpy.testing.assert_almost_equal(
             evalhyd.evalp(_obs, _prd, ["QS"], t_msk=msk)[0],
-            evalhyd.evalp(_obs[..., 99:], _prd[..., 99:], ["QS"])[0]
+            evalhyd.evalp(obs, prd, ["QS"])[0]
         )
 
     def test_conditions(self):
@@ -92,8 +97,9 @@ class TestMasking(unittest.TestCase):
 
             msk = (_obs[0] < 2000) | (_obs[0] > 3000)
 
-            obs = _obs[..., msk]
-            prd = _prd[..., msk]
+            # TODO: figure out why passing views would not work
+            obs = _obs[..., msk].copy()
+            prd = _prd[..., msk].copy()
 
             numpy.testing.assert_almost_equal(
                 evalhyd.evalp(_obs, _prd, ["QS"], m_cdt=cdt)[0],
@@ -106,8 +112,9 @@ class TestMasking(unittest.TestCase):
             median = numpy.squeeze(numpy.median(_prd, 2))
             msk = median <= numpy.quantile(median, 0.7)
 
-            obs = _obs[..., msk]
-            prd = _prd[..., msk]
+            # TODO: figure out why passing views would not work
+            obs = _obs[..., msk].copy()
+            prd = _prd[..., msk].copy()
 
             numpy.testing.assert_almost_equal(
                 evalhyd.evalp(_obs, _prd, ["QS"], m_cdt=cdt)[0],
