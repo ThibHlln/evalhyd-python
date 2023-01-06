@@ -9,7 +9,9 @@ from setuptools import setup
 import numpy
 
 
-__version__ = '0.0.1'
+# collect centrally sourced package version
+with open("evalhyd/version.py", 'r') as fv:
+    exec(fv.read())
 
 
 # vendor dependencies (unless told otherwise via environment variable)
