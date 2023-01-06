@@ -2,7 +2,10 @@ from typing import List, Dict
 from numpy import dtype
 from numpy.typing import NDArray
 
-from ._evalhyd import _evalp
+try:
+    from ._evalhyd import _evalp
+except ImportError:
+    pass
 
 
 def evalp(q_obs: NDArray[dtype('float64')],
