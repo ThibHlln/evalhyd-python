@@ -11,6 +11,20 @@ _prd = (
 )
 _obs = numpy.genfromtxt("./data/q_obs.csv", delimiter=',')[numpy.newaxis, :]
 
+# list all available probabilistic metrics
+_all_metrics = (
+    # threshold-based
+    'BS', 'BSS', 'BS_CRD', 'BS_LBD',
+    # quantile-based
+    'QS', 'CRPS',
+    # contingency table-based
+    'POD', 'POFD', 'FAR', 'CSI', 'ROCSS',
+    # ranks-based
+    'RANK_HIST', 'DS', 'AS',
+    # intervals
+    'CR', 'AW', 'AWN', 'AWI', 'WS', 'WSS'
+)
+
 
 class TestMetrics(unittest.TestCase):
 
@@ -33,13 +47,56 @@ class TestMetrics(unittest.TestCase):
 
     expected_qtl = {
         'QS':
-            [[[[[321.1607717,  294.3494105,  265.70418006,
+            [[[[[321.1607717, 294.3494105, 265.70418006,
                  236.15648446, 206.03965702]]]]],
         'CRPS':
             [[[[176.63504823]]]]
     }
 
-    def test_threshold_metrics(self):
+    expected_ct = {
+        'POD': [[[[[[1.00000000, 1.00000000, 1.00000000, numpy.nan],
+                    [0.86330935, 0.85436893, 0.75294118, numpy.nan],
+                    [0.86330935, 0.85436893, 0.75294118, numpy.nan],
+                    [0.86330935, 0.85436893, 0.75294118, numpy.nan],
+                    [0.86330935, 0.85436893, 0.75294118, numpy.nan],
+                    [0.86330935, 0.85436893, 0.75294118, numpy.nan]]]]]],
+        'POFD': [[[[[[1.00000000, 1.00000000, 1.00000000, numpy.nan],
+                     [0.08720930, 0.03846154, 0.02654867, numpy.nan],
+                     [0.08720930, 0.03846154, 0.02654867, numpy.nan],
+                     [0.08720930, 0.03846154, 0.02654867, numpy.nan],
+                     [0.08720930, 0.03846154, 0.02654867, numpy.nan],
+                     [0.08139535, 0.03846154, 0.02654867, numpy.nan]]]]]],
+        'FAR': [[[[[[0.55305466, 0.66881029, 0.72668810, numpy.nan],
+                    [0.11111111, 0.08333333, 0.08571429, numpy.nan],
+                    [0.11111111, 0.08333333, 0.08571429, numpy.nan],
+                    [0.11111111, 0.08333333, 0.08571429, numpy.nan],
+                    [0.11111111, 0.08333333, 0.08571429, numpy.nan],
+                    [0.10447761, 0.08333333, 0.08571429, numpy.nan]]]]]],
+        'CSI': [[[[[[0.44694534, 0.33118971, 0.27331190, numpy.nan],
+                    [0.77922078, 0.79279279, 0.70329670, numpy.nan],
+                    [0.77922078, 0.79279279, 0.70329670, numpy.nan],
+                    [0.77922078, 0.79279279, 0.70329670, numpy.nan],
+                    [0.77922078, 0.79279279, 0.70329670, numpy.nan],
+                    [0.78431373, 0.79279279, 0.70329670, numpy.nan]]]]]],
+        'ROCSS': [[[[[0.71084992, 0.78304705, 0.70640292, numpy.nan]]]]]
+    }
+    
+    expected_rk = {
+        'RANK_HIST': [[[[[0.607717, 0., 0., 0., 0., 0.392283]]]]],
+        'DS': [[[[133.1621622]]]],
+        'AS': [[[[0.4783321]]]]
+    }
+
+    expected_itv = {
+        'CR': [[[[[0.00321543, 0.00321543]]]]],
+        'AW': [[[[[1.58392283, 4.50160772]]]]],
+        'AWN': [[[[[0.00126077, 0.00358319]]]]],
+        'AWI': [[[[[0.99694518, 0.99828901]]]]],
+        'WS': [[[[[758.45668351, 2637.85209003]]]]],
+        'WSS': [[[[[0.66483599, 0.42297664]]]]]
+    }
+
+    def test_thresholds_metrics(self):
         thr = numpy.array([[690, 534, 445, numpy.nan]])
         for metric in self.expected_thr.keys():
             with self.subTest(metric=metric):
@@ -48,12 +105,37 @@ class TestMetrics(unittest.TestCase):
                     self.expected_thr[metric]
                 )
 
-    def test_quantile_metrics(self):
+    def test_quantiles_metrics(self):
         for metric in self.expected_qtl.keys():
             with self.subTest(metric=metric):
                 numpy.testing.assert_almost_equal(
                     evalhyd.evalp(_obs, _prd, [metric])[0],
                     self.expected_qtl[metric]
+                )
+
+    def test_contingency_table_metrics(self):
+        for metric in self.expected_ct.keys():
+            thr = numpy.array([[690, 534, 445, numpy.nan]])
+            with self.subTest(metric=metric):
+                numpy.testing.assert_almost_equal(
+                    evalhyd.evalp(_obs, _prd, [metric], thr, "low")[0],
+                    self.expected_ct[metric]
+                )
+                
+    def test_ranks_metrics(self):
+        for metric in self.expected_rk.keys():
+            with self.subTest(metric=metric):
+                numpy.testing.assert_almost_equal(
+                    evalhyd.evalp(_obs, _prd, [metric], seed=7)[0],
+                    self.expected_rk[metric]
+                )
+
+    def test_intervals_metrics(self):
+        for metric in self.expected_itv.keys():
+            with self.subTest(metric=metric):
+                numpy.testing.assert_almost_equal(
+                    evalhyd.evalp(_obs, _prd, [metric], c_lvl=[30., 80.])[0],
+                    self.expected_itv[metric]
                 )
 
 
@@ -127,7 +209,11 @@ class TestMissingData(unittest.TestCase):
 
     def test_nan(self):
         thr = numpy.array([[690, 534, 445, numpy.nan]])
-        for metric in ("BS", "BSS", "BS_CRD", "BS_LBD", "QS", "CRPS"):
+        for metric in _all_metrics:
+            # skip ranks-based metrics because they contain a random element
+            if metric in ("RANK_HIST", "DS", "AS"):
+                continue
+
             with self.subTest(metric=metric):
                 numpy.testing.assert_almost_equal(
                     # missing data flagged as NaN
@@ -138,7 +224,8 @@ class TestMissingData(unittest.TestCase):
                            [5.3, 5.2, 5.7, 2.3, numpy.nan]]]],
                         [metric],
                         thr,
-                        "high"
+                        "high",
+                        [30., 80.]
                     )[0],
                     # missing data pairwise deleted from series
                     evalhyd.evalp(
@@ -148,7 +235,8 @@ class TestMissingData(unittest.TestCase):
                            [5.3, 5.7, 2.3]]]],
                         [metric],
                         thr,
-                        "high"
+                        "high",
+                        [30., 80.]
                     )[0]
                 )
 
@@ -171,7 +259,11 @@ class TestUncertainty(unittest.TestCase):
         obs_3yrs = numpy.hstack((obs_1yr,) * 3)
         prd_3yrs = numpy.hstack((prd_1yr,) * 3)
 
-        for metric in ("BS", "BSS", "BS_CRD", "BS_LBD", "QS", "CRPS"):
+        for metric in _all_metrics:
+            # skip ranks-based metrics because they contain a random element
+            if metric in ("RANK_HIST", "DS", "AS"):
+                continue
+
             with self.subTest(metric=metric):
                 numpy.testing.assert_almost_equal(
                     # bootstrap with only one year of data
@@ -185,7 +277,8 @@ class TestUncertainty(unittest.TestCase):
                         bootstrap={
                             "n_samples": 10, "len_sample": 3, "summary": 0
                         },
-                        dts=dts_1yr
+                        dts=dts_1yr,
+                        c_lvl=[30., 80.]
                     )[0][:, :, :, [0]],
                     # repeat year of data three times to correspond to a
                     # bootstrap sample of length 3
@@ -194,7 +287,8 @@ class TestUncertainty(unittest.TestCase):
                         prd_3yrs[numpy.newaxis, numpy.newaxis],
                         [metric],
                         q_thr=thr,
-                        events="high"
+                        events="high",
+                        c_lvl=[30., 80.]
                     )[0]
                 )
 
