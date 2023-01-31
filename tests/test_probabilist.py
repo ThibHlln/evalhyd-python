@@ -131,10 +131,11 @@ class TestMetrics(unittest.TestCase):
                 )
 
     def test_intervals_metrics(self):
+        lvl = numpy.array([30., 80.])
         for metric in self.expected_itv.keys():
             with self.subTest(metric=metric):
                 numpy.testing.assert_almost_equal(
-                    evalhyd.evalp(_obs, _prd, [metric], c_lvl=[30., 80.])[0],
+                    evalhyd.evalp(_obs, _prd, [metric], c_lvl=lvl)[0],
                     self.expected_itv[metric]
                 )
 
@@ -176,7 +177,7 @@ class TestMasking(unittest.TestCase):
 
     def test_conditions(self):
         with self.subTest(conditions="observed streamflow values"):
-            cdt = numpy.array([["q_obs{<2000,>3000}"]], dtype='|S32')
+            cdt = numpy.array([["q_obs{<2000,>3000}"]])
 
             msk = (_obs[0] < 2000) | (_obs[0] > 3000)
 
@@ -215,28 +216,29 @@ class TestMissingData(unittest.TestCase):
                 continue
 
             with self.subTest(metric=metric):
+                lvl = numpy.array([30., 80.])
                 numpy.testing.assert_almost_equal(
                     # missing data flagged as NaN
                     evalhyd.evalp(
-                        [[4.7, numpy.nan, 5.5, 2.7, 4.1]],
-                        [[[[5.3, 4.2, 5.7, 2.3, numpy.nan],
-                           [4.3, 4.2, 4.7, 4.3, numpy.nan],
-                           [5.3, 5.2, 5.7, 2.3, numpy.nan]]]],
+                        numpy.array([[4.7, numpy.nan, 5.5, 2.7, 4.1]]),
+                        numpy.array([[[[5.3, 4.2, 5.7, 2.3, numpy.nan],
+                                       [4.3, 4.2, 4.7, 4.3, numpy.nan],
+                                       [5.3, 5.2, 5.7, 2.3, numpy.nan]]]]),
                         [metric],
                         thr,
                         "high",
-                        [30., 80.]
+                        lvl
                     )[0],
                     # missing data pairwise deleted from series
                     evalhyd.evalp(
-                        [[4.7, 5.5, 2.7]],
-                        [[[[5.3, 5.7, 2.3],
-                           [4.3, 4.7, 4.3],
-                           [5.3, 5.7, 2.3]]]],
+                        numpy.array([[4.7, 5.5, 2.7]]),
+                        numpy.array([[[[5.3, 5.7, 2.3],
+                                       [4.3, 4.7, 4.3],
+                                       [5.3, 5.7, 2.3]]]]),
                         [metric],
                         thr,
                         "high",
-                        [30., 80.]
+                        lvl
                     )[0]
                 )
 
@@ -265,6 +267,7 @@ class TestUncertainty(unittest.TestCase):
                 continue
 
             with self.subTest(metric=metric):
+                lvl = numpy.array([30., 80.])
                 numpy.testing.assert_almost_equal(
                     # bootstrap with only one year of data
                     # (compare last sample only to have matching dimensions)
@@ -278,7 +281,7 @@ class TestUncertainty(unittest.TestCase):
                             "n_samples": 10, "len_sample": 3, "summary": 0
                         },
                         dts=dts_1yr,
-                        c_lvl=[30., 80.]
+                        c_lvl=lvl
                     )[0][:, :, :, [0]],
                     # repeat year of data three times to correspond to a
                     # bootstrap sample of length 3
@@ -288,7 +291,7 @@ class TestUncertainty(unittest.TestCase):
                         [metric],
                         q_thr=thr,
                         events="high",
-                        c_lvl=[30., 80.]
+                        c_lvl=lvl
                     )[0]
                 )
 

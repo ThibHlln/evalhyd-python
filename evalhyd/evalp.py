@@ -1,6 +1,6 @@
 from typing import List, Dict
 from numpy import dtype
-from numpy.typing import NDArray, ArrayLike
+from numpy.typing import NDArray
 
 try:
     from ._evalhyd import _evalp
@@ -15,9 +15,9 @@ def evalp(q_obs: NDArray[dtype('float64')],
           events: str = None,
           c_lvl: NDArray[dtype('float64')] = None,
           t_msk: NDArray[dtype('bool')] = None,
-          m_cdt: ArrayLike = None,
+          m_cdt: NDArray[dtype('|S32')] = None,
           bootstrap: Dict[str, int] = None,
-          dts: ArrayLike = None,
+          dts: NDArray[dtype('|S32')] = None,
           seed: int = None) -> List[NDArray[dtype('float64')]]:
     """Function to evaluate probabilistic streamflow predictions"""
 
@@ -45,5 +45,25 @@ def evalp(q_obs: NDArray[dtype('float64')],
         kwargs['dts'] = dts
     if seed is not None:
         kwargs['seed'] = seed
+
+    # check array ranks
+    _expected = {
+        'q_obs': 2,
+        'q_prd': 4,
+        'q_thr': 2,
+        'c_lvl': 1,
+        't_msk': 4,
+        'm_cdt': 2,
+        'dts': 1
+    }
+
+    for arg, val in _expected.items():
+        try:
+            if kwargs[arg].ndim != val:
+                raise RuntimeError(
+                    f"'{arg}' must feature {val} {'axis' if val == 1 else 'axes'}"
+                )
+        except KeyError:
+            pass
 
     return _evalp(**kwargs)
