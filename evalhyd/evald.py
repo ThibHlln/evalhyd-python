@@ -17,7 +17,8 @@ def evald(q_obs: NDArray[dtype('float64')],
           t_msk: NDArray[dtype('bool')] = None,
           m_cdt: ArrayLike = None,
           bootstrap: Dict[str, int] = None,
-          dts: ArrayLike = None) -> List[NDArray[dtype('float64')]]:
+          dts: ArrayLike = None,
+          seed: int = None) -> List[NDArray[dtype('float64')]]:
     """Function to evaluate deterministic streamflow predictions"""
 
     # required arguments
@@ -43,5 +44,7 @@ def evald(q_obs: NDArray[dtype('float64')],
         kwargs['bootstrap'] = bootstrap
     if dts is not None:
         kwargs['dts'] = dts
+    if seed is not None:
+        kwargs['seed'] = seed
 
     return _evald(**kwargs)

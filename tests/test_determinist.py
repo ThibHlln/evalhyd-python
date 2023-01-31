@@ -88,7 +88,8 @@ class TestTransform(unittest.TestCase):
 class TestMasking(unittest.TestCase):
 
     def test_masks(self):
-        msk = numpy.ones(_obs.shape, dtype=bool)
+        msk = numpy.ones(_prd.shape, dtype=bool)
+        msk = msk[:, numpy.newaxis, :]
         msk[..., :99] = False
 
         # TODO: figure out why passing views would not work
@@ -102,7 +103,12 @@ class TestMasking(unittest.TestCase):
 
     def test_conditions(self):
         with self.subTest(conditions="observed streamflow values"):
-            cdt = numpy.array(["q_obs{<2000,>3000}"], dtype='|S32')
+            cdt = numpy.array([["q_obs{<2000,>3000}"],
+                               ["q_obs{<2000,>3000}"],
+                               ["q_obs{<2000,>3000}"],
+                               ["q_obs{<2000,>3000}"],
+                               ["q_obs{<2000,>3000}"]],
+                              dtype='|S32')
 
             msk = (_obs[0] < 2000) | (_obs[0] > 3000)
 
@@ -116,7 +122,12 @@ class TestMasking(unittest.TestCase):
             )
 
         with self.subTest(conditions="observed streamflow statistics"):
-            cdt = numpy.array(["q_obs{>=median}"], dtype='|S32')
+            cdt = numpy.array([["q_obs{>=median}"],
+                               ["q_obs{>=median}"],
+                               ["q_obs{>=median}"],
+                               ["q_obs{>=median}"],
+                               ["q_obs{>=median}"]],
+                              dtype='|S32')
 
             msk = _obs[0] >= numpy.median(_obs)
 

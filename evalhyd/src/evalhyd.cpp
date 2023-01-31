@@ -24,10 +24,11 @@ auto evald(
     std::optional<std::string> transform,
     std::optional<double> exponent,
     std::optional<double> epsilon,
-    const xt::pytensor<bool, 2>& t_msk,
-    const xt::pytensor<std::array<char, 32>, 1>& m_cdt,
+    const xt::pytensor<bool, 3>& t_msk,
+    const xt::pytensor<std::array<char, 32>, 2>& m_cdt,
     std::optional<std::unordered_map<std::string, int>> bootstrap,
-    const std::vector<std::string>& dts
+    const std::vector<std::string>& dts,
+    std::optional<int> seed
 )
 {
     return evalhyd::evald(
@@ -42,7 +43,8 @@ auto evald(
         (bootstrap.has_value())
         ? bootstrap.value()
         : xtl::missing<std::unordered_map<std::string, int>>(),
-        dts
+        dts,
+        (seed.has_value()) ? seed.value() : xtl::missing<int>()
     );
 }
 
@@ -51,10 +53,13 @@ auto evalp(
     const xt::pytensor<double, 4>& q_prd,
     const std::vector<std::string>& metrics,
     const xt::pytensor<double, 2>& q_thr,
+    std::optional<std::string> events,
+    const std::vector<double>& c_lvl,
     const xt::pytensor<bool, 4>& t_msk,
     const xt::pytensor<std::array<char, 32>, 2>& m_cdt,
     std::optional<std::unordered_map<std::string, int>> bootstrap,
-    const std::vector<std::string>& dts
+    const std::vector<std::string>& dts,
+    std::optional<int> seed
 )
 {
     return evalhyd::evalp(
@@ -62,12 +67,15 @@ auto evalp(
         q_prd,
         metrics,
         q_thr,
+        (events.has_value()) ? events.value() : xtl::missing<std::string>(),
+        c_lvl,
         t_msk,
         m_cdt,
         (bootstrap.has_value())
         ? bootstrap.value()
         : xtl::missing<std::unordered_map<std::string, int>>(),
-        dts
+        dts,
+        (seed.has_value()) ? seed.value() : xtl::missing<int>()
     );
 }
 
@@ -89,10 +97,11 @@ PYBIND11_MODULE(_evalhyd, m)
         py::arg("transform") = py::none(),
         py::arg("exponent") = py::none(),
         py::arg("epsilon") = py::none(),
-        py::arg("t_msk") = xt::pytensor<bool, 2>({0}),
-        py::arg("m_cdt") = xt::pytensor<std::array<char, 32>, 1>({}),
+        py::arg("t_msk") = xt::pytensor<bool, 3>({0}),
+        py::arg("m_cdt") = xt::pytensor<std::array<char, 32>, 2>({0}),
         py::arg("bootstrap") = py::none(),
-        py::arg("dts") = py::list()
+        py::arg("dts") = py::list(),
+        py::arg("seed") = py::none()
     );
 
     // probabilistic evaluation
@@ -104,10 +113,13 @@ PYBIND11_MODULE(_evalhyd, m)
         py::arg("q_prd"),
         py::arg("metrics"),
         py::arg("q_thr") = xt::pytensor<double, 2>({0}),
+        py::arg("events") = py::none(),
+        py::arg("c_lvl") = py::list(),
         py::arg("t_msk") = xt::pytensor<bool, 4>({0}),
         py::arg("m_cdt") = xt::pytensor<std::array<char, 32>, 2>({0}),
         py::arg("bootstrap") = py::none(),
-        py::arg("dts") = py::list()
+        py::arg("dts") = py::list(),
+        py::arg("seed") = py::none()
     );
 
 #ifdef VERSION_INFO

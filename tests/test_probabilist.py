@@ -44,7 +44,7 @@ class TestMetrics(unittest.TestCase):
         for metric in self.expected_thr.keys():
             with self.subTest(metric=metric):
                 numpy.testing.assert_almost_equal(
-                    evalhyd.evalp(_obs, _prd, [metric], thr)[0],
+                    evalhyd.evalp(_obs, _prd, [metric], thr, "high")[0],
                     self.expected_thr[metric]
                 )
 
@@ -61,16 +61,16 @@ class TestDecomposition(unittest.TestCase):
 
     def test_brier_calibration_refinement(self):
         thr = numpy.array([[690, 534, 445]])
-        bs, = evalhyd.evalp(_obs, _prd, ["BS"], thr)
-        bs_crd, = evalhyd.evalp(_obs, _prd, ["BS_CRD"], thr)
+        bs, = evalhyd.evalp(_obs, _prd, ["BS"], thr, "high")
+        bs_crd, = evalhyd.evalp(_obs, _prd, ["BS_CRD"], thr, "high")
         numpy.testing.assert_almost_equal(
             bs, bs_crd[..., 0] - bs_crd[..., 1] + bs_crd[..., 2]
         )
 
     def test_brier_likelihood_base_rate(self):
         thr = numpy.array([[690, 534, 445]])
-        bs, = evalhyd.evalp(_obs, _prd, ["BS"], thr)
-        bs_lbd, = evalhyd.evalp(_obs, _prd, ["BS_LBD"], thr)
+        bs, = evalhyd.evalp(_obs, _prd, ["BS"], thr, "high")
+        bs_lbd, = evalhyd.evalp(_obs, _prd, ["BS_LBD"], thr, "high")
         numpy.testing.assert_almost_equal(
             bs, bs_lbd[..., 0] - bs_lbd[..., 1] + bs_lbd[..., 2]
         )
@@ -79,7 +79,8 @@ class TestDecomposition(unittest.TestCase):
 class TestMasking(unittest.TestCase):
 
     def test_masks(self):
-        msk = numpy.ones((_prd.shape[0], _prd.shape[1], 1, _prd.shape[3]), dtype=bool)
+        msk = numpy.ones((_prd.shape[0], _prd.shape[1], 1, _prd.shape[3]),
+                         dtype=bool)
         msk[..., :99] = False
 
         # TODO: figure out why passing views would not work
@@ -136,7 +137,8 @@ class TestMissingData(unittest.TestCase):
                            [4.3, 4.2, 4.7, 4.3, numpy.nan],
                            [5.3, 5.2, 5.7, 2.3, numpy.nan]]]],
                         [metric],
-                        thr
+                        thr,
+                        "high"
                     )[0],
                     # missing data pairwise deleted from series
                     evalhyd.evalp(
@@ -145,7 +147,8 @@ class TestMissingData(unittest.TestCase):
                            [4.3, 4.7, 4.3],
                            [5.3, 5.7, 2.3]]]],
                         [metric],
-                        thr
+                        thr,
+                        "high"
                     )[0]
                 )
 
@@ -178,6 +181,7 @@ class TestUncertainty(unittest.TestCase):
                         prd_1yr[numpy.newaxis, numpy.newaxis],
                         [metric],
                         q_thr=thr,
+                        events="high",
                         bootstrap={
                             "n_samples": 10, "len_sample": 3, "summary": 0
                         },
@@ -189,7 +193,8 @@ class TestUncertainty(unittest.TestCase):
                         obs_3yrs[numpy.newaxis],
                         prd_3yrs[numpy.newaxis, numpy.newaxis],
                         [metric],
-                        q_thr=thr
+                        q_thr=thr,
+                        events="high"
                     )[0]
                 )
 
