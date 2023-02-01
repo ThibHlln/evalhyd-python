@@ -1,0 +1,13 @@
+[submodule "deps/evalhyd"]
+	path = deps/evalhyd
+	url = https://gitlab.irstea.fr/HYCAR-Hydro/evalhyd/evalhyd.git
+	branch = dev
+[submodule "deps/xtl"]
+	path = deps/xtl
+	url = https://github.com/xtensor-stack/xtl.git
+[submodule "deps/xtensor-python"]
+	path = deps/xtensor-python
+	url = https://github.com/xtensor-stack/xtensor-python.git
+[submodule "deps/xtensor"]
+	path = deps/xtensor
+	url = https://github.com/xtensor-stack/xtensor.git
