@@ -140,6 +140,23 @@ class TestMasking(unittest.TestCase):
                 evalhyd.evald(obs, prd, ["NSE"])[0]
             )
 
+        with self.subTest(conditions="time indices"):
+            cdt = numpy.array([["t{20:311}"],
+                               ["t{20:100,100:311}"],
+                               ["t{20,21,22,23,24:311}"],
+                               ["t{20,21,22,23:309,309,310}"],
+                               ["t{20:80,80,81,82,83:311}"]],
+                              dtype='|S32')
+
+            # TODO: figure out why passing views would not work
+            obs = _obs[..., 20:].copy()
+            prd = _prd[..., 20:].copy()
+
+            numpy.testing.assert_almost_equal(
+                evalhyd.evald(_obs, _prd, ["NSE"], m_cdt=cdt)[0],
+                evalhyd.evald(obs, prd, ["NSE"])[0]
+            )
+
 
 class TestMissingData(unittest.TestCase):
 
