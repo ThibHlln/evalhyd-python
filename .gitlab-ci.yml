@@ -5,6 +5,8 @@ stages:
 
 build-and-test:
   stage: build_and_test
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
   script:
     # install dependencies
     - micromamba install --yes --file environment.yml
