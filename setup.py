@@ -19,6 +19,7 @@ for dep in deps:
     if not os.getenv(f"EVALHYD_PYTHON_VENDOR_{dep.upper().replace('-', '_')}") == 'FALSE':
         # register dependency headers
         deps_include_dirs.append(deps_blank_path.format(dep))
+        print(f"vendoring {dep}")
 
 # configure Python extension
 ext_modules = [
