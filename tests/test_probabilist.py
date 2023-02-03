@@ -80,7 +80,7 @@ class TestMetrics(unittest.TestCase):
                     [0.78431373, 0.79279279, 0.70329670, numpy.nan]]]]]],
         'ROCSS': [[[[[0.71084992, 0.78304705, 0.70640292, numpy.nan]]]]]
     }
-    
+
     expected_rk = {
         'RANK_HIST': [[[[[0.607717, 0., 0., 0., 0., 0.392283]]]]],
         'DS': [[[[133.1621622]]]],
@@ -121,7 +121,7 @@ class TestMetrics(unittest.TestCase):
                     evalhyd.evalp(_obs, _prd, [metric], thr, "low")[0],
                     self.expected_ct[metric]
                 )
-                
+
     def test_ranks_metrics(self):
         for metric in self.expected_rk.keys():
             with self.subTest(metric=metric):
@@ -307,6 +307,117 @@ class TestUncertainty(unittest.TestCase):
                         c_lvl=lvl
                     )[0]
                 )
+
+
+class TestMultiDimensional(unittest.TestCase):
+
+    thr = numpy.array([[690, 534, 445, numpy.nan]])
+    events = "high"
+    lvl = numpy.array([30., 80.])
+    seed = 7
+
+    # skip ranks-based metrics because they contain a random element
+    metrics = [m for m in _all_metrics if m not in ("RANK_HIST", "DS", "AS")]
+
+    def test_multi_sites(self):
+        n_sit = 3
+        multi_obs = numpy.repeat(_obs, repeats=n_sit, axis=0)
+        multi_prd = numpy.repeat(_prd, repeats=n_sit, axis=0)
+        multi_thr = numpy.repeat(self.thr, repeats=n_sit, axis=0)
+
+        multi = evalhyd.evalp(
+            multi_obs,
+            multi_prd,
+            self.metrics,
+            q_thr=multi_thr,
+            events=self.events,
+            c_lvl=self.lvl,
+            seed=self.seed
+        )
+
+        mono = evalhyd.evalp(
+            _obs,
+            _prd,
+            self.metrics,
+            q_thr=self.thr,
+            events=self.events,
+            c_lvl=self.lvl,
+            seed=self.seed
+        )
+
+        for m, metric in enumerate(self.metrics):
+            for site in range(n_sit):
+                with self.subTest(metric=metric, site=site):
+                    numpy.testing.assert_almost_equal(
+                        multi[m][[site]], mono[m]
+                    )
+
+    def test_multi_leadtimes(self):
+        n_ldt = 7
+        multi_prd = numpy.repeat(_prd, repeats=n_ldt, axis=1)
+
+        multi = evalhyd.evalp(
+            _obs,
+            multi_prd,
+            self.metrics,
+            q_thr=self.thr,
+            events=self.events,
+            c_lvl=self.lvl,
+            seed=self.seed
+        )
+
+        mono = evalhyd.evalp(
+            _obs,
+            _prd,
+            self.metrics,
+            q_thr=self.thr,
+            events=self.events,
+            c_lvl=self.lvl,
+            seed=self.seed
+        )
+
+        for m, metric in enumerate(self.metrics):
+            for leadtime in range(n_ldt):
+                with self.subTest(metric=metric, leadtime=leadtime):
+                    numpy.testing.assert_almost_equal(
+                        multi[m][:, [leadtime]], mono[m]
+                    )
+
+    def test_multi_sites_multi_leadtimes(self):
+        n_sit = 3
+        n_ldt = 7
+        multi_obs = numpy.repeat(_obs, repeats=n_sit, axis=0)
+        multi_prd = numpy.repeat(_prd, repeats=n_sit, axis=0)
+        multi_prd = numpy.repeat(multi_prd, repeats=n_ldt, axis=1)
+        multi_thr = numpy.repeat(self.thr, repeats=n_sit, axis=0)
+
+        multi = evalhyd.evalp(
+            multi_obs,
+            multi_prd,
+            self.metrics,
+            q_thr=multi_thr,
+            events=self.events,
+            c_lvl=self.lvl,
+            seed=self.seed
+        )
+
+        mono = evalhyd.evalp(
+            _obs,
+            _prd,
+            self.metrics,
+            q_thr=self.thr,
+            events=self.events,
+            c_lvl=self.lvl,
+            seed=self.seed
+        )
+
+        for m, metric in enumerate(self.metrics):
+            for site in range(n_sit):
+                for leadtime in range(n_ldt):
+                    with self.subTest(metric=metric, site=site, leadtime=leadtime):
+                        numpy.testing.assert_almost_equal(
+                            multi[m][site, leadtime], mono[m][0, 0]
+                        )
 
 
 if __name__ == '__main__':
