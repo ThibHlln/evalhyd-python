@@ -386,9 +386,18 @@ class TestMultiDimensional(unittest.TestCase):
     def test_multi_sites_multi_leadtimes(self):
         n_sit = 3
         n_ldt = 7
+
         multi_obs = numpy.repeat(_obs, repeats=n_sit, axis=0)
+        multi_obs += numpy.random.randint(
+            low=0, high=200, size=(n_sit, multi_obs.shape[1])
+        )
+
         multi_prd = numpy.repeat(_prd, repeats=n_sit, axis=0)
         multi_prd = numpy.repeat(multi_prd, repeats=n_ldt, axis=1)
+        multi_prd += numpy.random.randint(
+            low=0, high=200, size=(n_sit, n_ldt, *multi_prd.shape[2:])
+        )
+
         multi_thr = numpy.repeat(self.thr, repeats=n_sit, axis=0)
 
         multi = evalhyd.evalp(
@@ -401,22 +410,23 @@ class TestMultiDimensional(unittest.TestCase):
             seed=self.seed
         )
 
-        mono = evalhyd.evalp(
-            _obs,
-            _prd,
-            self.metrics,
-            q_thr=self.thr,
-            events=self.events,
-            c_lvl=self.lvl,
-            seed=self.seed
-        )
-
         for m, metric in enumerate(self.metrics):
-            for site in range(n_sit):
-                for leadtime in range(n_ldt):
-                    with self.subTest(metric=metric, site=site, leadtime=leadtime):
+            for sit in range(n_sit):
+                for ldt in range(n_ldt):
+
+                    mono = evalhyd.evalp(
+                        multi_obs[[sit]],
+                        multi_prd[[sit]][:, [ldt]],
+                        [metric],
+                        q_thr=self.thr,
+                        events=self.events,
+                        c_lvl=self.lvl,
+                        seed=self.seed
+                    )
+
+                    with self.subTest(metric=metric, site=sit, leadtime=ldt):
                         numpy.testing.assert_almost_equal(
-                            multi[m][site, leadtime], mono[m][0, 0]
+                            multi[m][sit, ldt], mono[0][0, 0]
                         )
 
 
