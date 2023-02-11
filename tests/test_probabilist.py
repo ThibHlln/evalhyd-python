@@ -7,7 +7,7 @@ import evalhyd
 # load some predicted and observed streamflow
 _prd = (
     numpy.genfromtxt("./data/q_prd.csv", delimiter=',')
-    [:5, :][numpy.newaxis, numpy.newaxis, ...]
+    [numpy.newaxis, numpy.newaxis, ...]
 )
 _obs = numpy.genfromtxt("./data/q_obs.csv", delimiter=',')[numpy.newaxis, :]
 
@@ -29,71 +29,38 @@ _all_metrics = (
 class TestMetrics(unittest.TestCase):
 
     expected_thr = {
-        'BS':
-            [[[[[0.1081672, 0.073954980, 0.08681672, numpy.nan]]]]],
-        'BSS':
-            [[[[[0.56240422, 0.66612211, 0.56288391, numpy.nan]]]]],
-        'BS_CRD':
-            [[[[[[0.01335634, 0.15237434, 0.24718520],
-                 [0.00550861, 0.15305671, 0.22150309],
-                 [0.00753750, 0.11933328, 0.19861250],
-                 [numpy.nan, numpy.nan, numpy.nan]]]]]],
-        'BS_LBD':
-            [[[[[[0.01244569, 0.14933386, 0.24505537],
-                 [0.00801337, 0.14745568, 0.21339730],
-                 [0.01719462, 0.10479711, 0.17441921],
-                 [numpy.nan, numpy.nan, numpy.nan]]]]]]
+        metric: (
+            numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
+            [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
+        ) for metric in ('BS', 'BSS', 'BS_CRD', 'BS_LBD')
     }
 
     expected_qtl = {
-        'QS':
-            [[[[[321.1607717, 294.3494105, 265.70418006,
-                 236.15648446, 206.03965702]]]]],
-        'CRPS':
-            [[[[176.63504823]]]]
+        metric: (
+            numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
+            [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
+        ) for metric in ('QS', 'CRPS')
     }
 
     expected_ct = {
-        'POD': [[[[[[1.00000000, 1.00000000, 1.00000000, numpy.nan],
-                    [0.86330935, 0.87378641, 0.75294118, numpy.nan],
-                    [0.86330935, 0.87378641, 0.75294118, numpy.nan],
-                    [0.86330935, 0.87378641, 0.75294118, numpy.nan],
-                    [0.86330935, 0.87378641, 0.75294118, numpy.nan],
-                    [0.86330935, 0.87378641, 0.75294118, numpy.nan]]]]]],
-        'POFD': [[[[[[1.00000000, 1.00000000, 1.00000000, numpy.nan],
-                     [0.08720930, 0.03846154, 0.02654867, numpy.nan],
-                     [0.08720930, 0.03846154, 0.02654867, numpy.nan],
-                     [0.08720930, 0.03846154, 0.02654867, numpy.nan],
-                     [0.08720930, 0.03846154, 0.02654867, numpy.nan],
-                     [0.08139535, 0.03846154, 0.02654867, numpy.nan]]]]]],
-        'FAR': [[[[[[0.55305466, 0.66881029, 0.72668810, numpy.nan],
-                    [0.11111111, 0.08163265, 0.08571429, numpy.nan],
-                    [0.11111111, 0.08163265, 0.08571429, numpy.nan],
-                    [0.11111111, 0.08163265, 0.08571429, numpy.nan],
-                    [0.11111111, 0.08163265, 0.08571429, numpy.nan],
-                    [0.10447761, 0.08163265, 0.08571429, numpy.nan]]]]]],
-        'CSI': [[[[[[0.44694534, 0.33118971, 0.27331190, numpy.nan],
-                    [0.77922078, 0.81081081, 0.70329670, numpy.nan],
-                    [0.77922078, 0.81081081, 0.70329670, numpy.nan],
-                    [0.77922078, 0.81081081, 0.70329670, numpy.nan],
-                    [0.77922078, 0.81081081, 0.70329670, numpy.nan],
-                    [0.78431373, 0.81081081, 0.70329670, numpy.nan]]]]]],
-        'ROCSS': [[[[[0.71084992, 0.80171770, 0.70640292, numpy.nan]]]]]
+        metric: (
+            numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
+            [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
+        ) for metric in ('POD', 'POFD', 'FAR', 'CSI', 'ROCSS')
     }
 
     expected_rk = {
-        'RANK_HIST': [[[[[0.607717, 0., 0., 0., 0., 0.392283]]]]],
-        'DS': [[[[133.1621622]]]],
-        'AS': [[[[0.4783321]]]]
+        metric: (
+            numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
+            [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
+        ) for metric in ('RANK_HIST', 'DS', 'AS')
     }
 
     expected_itv = {
-        'CR': [[[[[0.00321543, 0.00321543]]]]],
-        'AW': [[[[[1.58392283, 4.50160772]]]]],
-        'AWN': [[[[[0.00126077, 0.00358319]]]]],
-        'AWI': [[[[[0.99694518, 0.99828901]]]]],
-        'WS': [[[[[758.45668351, 2637.85209003]]]]],
-        'WSS': [[[[[0.66483599, 0.42297664]]]]]
+        metric: (
+            numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
+            [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
+        ) for metric in ('CR', 'AW', 'AWN', 'AWI', 'WS', 'WSS')
     }
 
     def test_thresholds_metrics(self):
@@ -133,6 +100,11 @@ class TestMetrics(unittest.TestCase):
     def test_intervals_metrics(self):
         lvl = numpy.array([30., 80.])
         for metric in self.expected_itv.keys():
+
+            numpy.set_printoptions(precision=13)
+            m = evalhyd.evalp(_obs, _prd, [metric], c_lvl=lvl)[0][0, 0, 0]
+            numpy.savetxt(f"./expected/evalp/{metric}.csv", m, delimiter=',', fmt="%.13f")
+
             with self.subTest(metric=metric):
                 numpy.testing.assert_almost_equal(
                     evalhyd.evalp(_obs, _prd, [metric], c_lvl=lvl)[0],

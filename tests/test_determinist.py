@@ -5,37 +5,25 @@ import evalhyd
 
 
 # load some predicted and observed streamflow
-_prd = numpy.genfromtxt("./data/q_prd.csv", delimiter=',')[:5, :]
+_prd = numpy.genfromtxt("./data/q_prd.csv", delimiter=',')[:, :]
 _obs = numpy.genfromtxt("./data/q_obs.csv", delimiter=',')[numpy.newaxis, :]
+
+# list all available deterministic metrics
+_all_metrics = (
+    # errors-based
+    'RMSE',
+    # efficiencies-based
+    'NSE', 'KGE', 'KGEPRIME'
+)
 
 
 class TestMetrics(unittest.TestCase):
 
     expected = {
-        'RMSE':
-            [[[777.03427238]],
-             [[776.87847854]],
-             [[777.80021654]],
-             [[778.15108180]],
-             [[778.61486998]]],
-        'NSE':
-            [[[0.71891219]],
-             [[0.71902490]],
-             [[0.71835777]],
-             [[0.71810361]],
-             [[0.71776748]]],
-        'KGE':
-            [[[0.74808767]],
-             [[0.74610620]],
-             [[0.74411103]],
-             [[0.74301085]],
-             [[0.74176777]]],
-        'KGEPRIME':
-            [[[0.81314075]],
-             [[0.81277485]],
-             [[0.81203242]],
-             [[0.81178671]],
-             [[0.81138658]]]
+        metric: (
+            numpy.genfromtxt(f"./expected/evald/{metric}.csv", delimiter=',')
+            [:, numpy.newaxis, numpy.newaxis]
+        ) for metric in _all_metrics
     }
 
     def test_metrics_2d(self):
@@ -103,11 +91,7 @@ class TestMasking(unittest.TestCase):
 
     def test_conditions(self):
         with self.subTest(conditions="observed streamflow values"):
-            cdt = numpy.array([["q_obs{<2000,>3000}"],
-                               ["q_obs{<2000,>3000}"],
-                               ["q_obs{<2000,>3000}"],
-                               ["q_obs{<2000,>3000}"],
-                               ["q_obs{<2000,>3000}"]],
+            cdt = numpy.array([["q_obs{<2000,>3000}"]] * _prd.shape[0],
                               dtype='|S32')
 
             msk = (_obs[0] < 2000) | (_obs[0] > 3000)
@@ -122,11 +106,7 @@ class TestMasking(unittest.TestCase):
             )
 
         with self.subTest(conditions="observed streamflow statistics"):
-            cdt = numpy.array([["q_obs{>=median}"],
-                               ["q_obs{>=median}"],
-                               ["q_obs{>=median}"],
-                               ["q_obs{>=median}"],
-                               ["q_obs{>=median}"]],
+            cdt = numpy.array([["q_obs{>=median}"]] * _prd.shape[0],
                               dtype='|S32')
 
             msk = _obs[0] >= numpy.median(_obs)
@@ -141,8 +121,8 @@ class TestMasking(unittest.TestCase):
             )
 
         with self.subTest(conditions="time indices"):
-            cdt = numpy.array([["t{20:311}"],
-                               ["t{20:100,100:311}"],
+            cdt = numpy.array([["t{20:311}"]] * (_prd.shape[0] - 4) +
+                              [["t{20:100,100:311}"],
                                ["t{20,21,22,23,24:311}"],
                                ["t{20,21,22,23:309,309,310}"],
                                ["t{20:80,80,81,82,83:311}"]],
