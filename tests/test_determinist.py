@@ -11,9 +11,9 @@ _obs = numpy.genfromtxt("./data/q_obs.csv", delimiter=',')[numpy.newaxis, :]
 # list all available deterministic metrics
 _all_metrics = (
     # errors-based
-    'RMSE',
+    'MAE', 'MARE', 'MSE', 'RMSE',
     # efficiencies-based
-    'NSE', 'KGE', 'KGEPRIME'
+    'NSE', 'KGE', 'KGE_D', 'KGEPRIME', 'KGEPRIME_D',
 )
 
 
