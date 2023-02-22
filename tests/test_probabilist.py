@@ -14,7 +14,7 @@ _obs = numpy.genfromtxt("./data/q_obs.csv", delimiter=',')[numpy.newaxis, :]
 # list all available probabilistic metrics
 _all_metrics = (
     # threshold-based
-    'BS', 'BSS', 'BS_CRD', 'BS_LBD',
+    'BS', 'BSS', 'BS_CRD', 'BS_LBD', 'REL_DIAG',
     # quantile-based
     'QS', 'CRPS',
     # contingency table-based
@@ -32,8 +32,14 @@ class TestMetrics(unittest.TestCase):
         metric: (
             numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
             [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
-        ) for metric in ('BS', 'BSS', 'BS_CRD', 'BS_LBD')
+        ) for metric in ('BS', 'BSS', 'BS_CRD', 'BS_LBD', 'REL_DIAG')
     }
+    # /!\ stacked-up thresholds in CSV file for REL_DIAG
+    #     because 7D metric so need to reshape array
+    expected_thr['REL_DIAG'] = (
+        expected_thr['REL_DIAG'].reshape(expected_thr['BS'].shape
+                                         + (_prd.shape[2] + 1, 3))
+    )
 
     expected_qtl = {
         metric: (
