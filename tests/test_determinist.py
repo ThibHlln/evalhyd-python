@@ -16,6 +16,11 @@ _all_metrics = (
     'NSE', 'KGE', 'KGE_D', 'KGEPRIME', 'KGEPRIME_D',
 )
 
+# list all available deterministic diagnostics
+_all_diags = (
+    'completeness'
+)
+
 
 class TestMetrics(unittest.TestCase):
 
@@ -201,6 +206,45 @@ class TestUncertainty(unittest.TestCase):
                     # bootstrap sample of length 3
                     evalhyd.evald(obs_3yrs, prd_3yrs, [metric])[0]
                 )
+
+
+class TestDiagnostics(unittest.TestCase):
+
+    def test_completeness(self):
+        obs = numpy.array(
+            [[4.7, 4.3, numpy.nan, 2.7, 4.1, 5.0]]
+        )
+
+        prd = numpy.array(
+            [[5.3, numpy.nan, 5.7, 2.3, 3.3, 4.1],
+             [4.3, 4.2, 4.7, 4.3, 3.3, 2.8],
+             [5.3, numpy.nan, 5.7, 2.3, 3.8, numpy.nan]]
+        )
+
+        msk = numpy.array(
+            [[[True, True, True, False, True, True],
+              [True, True, True, True, True, True]],
+             [[True, True, True, True, True, False],
+              [True, True, True, True, True, True]],
+             [[True, True, True, False, False, True],
+              [True, True, True, True, True, True]]]
+        )
+
+        exp = numpy.array(
+            [[[3.],
+              [4.]],
+             [[4.],
+              [5.]],
+             [[1.],
+              [3.]]]
+        )
+
+        numpy.testing.assert_almost_equal(
+            exp,
+            evalhyd.evald(
+                obs, prd, ["NSE"], t_msk=msk, diagnostics=["completeness"]
+            )[1]
+        )
 
 
 if __name__ == '__main__':
