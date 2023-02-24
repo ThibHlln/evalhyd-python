@@ -11,6 +11,8 @@ except ImportError:
 def evald(q_obs: NDArray[dtype('float64')],
           q_prd: NDArray[dtype('float64')],
           metrics: List[str],
+          q_thr: NDArray[dtype('float64')] = None,
+          events: str = None,
           transform: str = None,
           exponent: float = None,
           epsilon: float = None,
@@ -18,7 +20,8 @@ def evald(q_obs: NDArray[dtype('float64')],
           m_cdt: NDArray[dtype('|S32')] = None,
           bootstrap: Dict[str, int] = None,
           dts: NDArray[dtype('|S32')] = None,
-          seed: int = None) -> List[NDArray[dtype('float64')]]:
+          seed: int = None,
+          diagnostics: List[str] = None) -> List[NDArray[dtype('float64')]]:
     """Function to evaluate deterministic streamflow predictions"""
 
     # required arguments
@@ -30,6 +33,12 @@ def evald(q_obs: NDArray[dtype('float64')],
     }
 
     # optional arguments
+    if q_thr is not None:
+        kwargs['q_thr'] = (
+            q_thr.reshape(1, q_thr.size) if q_thr.ndim == 1 else q_thr
+        )
+    if events is not None:
+        kwargs['events'] = events
     if transform is not None:
         kwargs['transform'] = transform
     if exponent is not None:
@@ -46,11 +55,14 @@ def evald(q_obs: NDArray[dtype('float64')],
         kwargs['dts'] = dts
     if seed is not None:
         kwargs['seed'] = seed
+    if diagnostics is not None:
+        kwargs['diagnostics'] = diagnostics
 
     # check array ranks
     _expected = {
         'q_obs': 2,
         'q_prd': 2,
+        'q_thr': 2,
         't_msk': 3,
         'm_cdt': 2,
         'dts': 1

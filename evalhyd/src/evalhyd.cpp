@@ -21,6 +21,8 @@ auto evald(
     const xt::pytensor<double, 2>& q_obs,
     const xt::pytensor<double, 2>& q_prd,
     const std::vector<std::string>& metrics,
+    const xt::pytensor<double, 2>& q_thr,
+    std::optional<std::string> events,
     std::optional<std::string> transform,
     std::optional<double> exponent,
     std::optional<double> epsilon,
@@ -28,13 +30,16 @@ auto evald(
     const xt::pytensor<std::array<char, 32>, 2>& m_cdt,
     std::optional<std::unordered_map<std::string, int>> bootstrap,
     const std::vector<std::string>& dts,
-    std::optional<int> seed
+    std::optional<int> seed,
+    std::optional<std::vector<std::string>> diagnostics
 )
 {
     return evalhyd::evald(
         q_obs,
         q_prd,
         metrics,
+        q_thr,
+        (events.has_value()) ? events.value() : xtl::missing<std::string>(),
         (transform.has_value()) ? transform.value() : xtl::missing<std::string>(),
         (exponent.has_value()) ? exponent.value() : xtl::missing<double>(),
         (epsilon.has_value()) ? epsilon.value() : xtl::missing<double>(),
@@ -44,7 +49,10 @@ auto evald(
         ? bootstrap.value()
         : xtl::missing<std::unordered_map<std::string, int>>(),
         dts,
-        (seed.has_value()) ? seed.value() : xtl::missing<int>()
+        (seed.has_value()) ? seed.value() : xtl::missing<int>(),
+        (diagnostics.has_value())
+        ? diagnostics.value()
+        : xtl::missing<std::vector<std::string>>()
     );
 }
 
@@ -59,7 +67,8 @@ auto evalp(
     const xt::pytensor<std::array<char, 32>, 2>& m_cdt,
     std::optional<std::unordered_map<std::string, int>> bootstrap,
     const std::vector<std::string>& dts,
-    std::optional<int> seed
+    std::optional<int> seed,
+    std::optional<std::vector<std::string>> diagnostics
 )
 {
     return evalhyd::evalp(
@@ -75,7 +84,10 @@ auto evalp(
         ? bootstrap.value()
         : xtl::missing<std::unordered_map<std::string, int>>(),
         dts,
-        (seed.has_value()) ? seed.value() : xtl::missing<int>()
+        (seed.has_value()) ? seed.value() : xtl::missing<int>(),
+        (diagnostics.has_value())
+        ? diagnostics.value()
+        : xtl::missing<std::vector<std::string>>()
     );
 }
 
@@ -94,6 +106,8 @@ PYBIND11_MODULE(_evalhyd, m)
         py::arg("q_obs"),
         py::arg("q_prd"),
         py::arg("metrics"),
+        py::arg("q_thr") = xt::pytensor<double, 2>({0}),
+        py::arg("events") = py::none(),
         py::arg("transform") = py::none(),
         py::arg("exponent") = py::none(),
         py::arg("epsilon") = py::none(),
@@ -101,7 +115,8 @@ PYBIND11_MODULE(_evalhyd, m)
         py::arg("m_cdt") = xt::pytensor<std::array<char, 32>, 2>({0}),
         py::arg("bootstrap") = py::none(),
         py::arg("dts") = py::list(),
-        py::arg("seed") = py::none()
+        py::arg("seed") = py::none(),
+        py::arg("diagnostics") = py::none()
     );
 
     // probabilistic evaluation
@@ -119,7 +134,8 @@ PYBIND11_MODULE(_evalhyd, m)
         py::arg("m_cdt") = xt::pytensor<std::array<char, 32>, 2>({0}),
         py::arg("bootstrap") = py::none(),
         py::arg("dts") = py::list(),
-        py::arg("seed") = py::none()
+        py::arg("seed") = py::none(),
+        py::arg("diagnostics") = py::none()
     );
 
 #ifdef VERSION_INFO

@@ -47,28 +47,28 @@ class TestTransform(unittest.TestCase):
 
     def test_transform_sqrt(self):
         numpy.testing.assert_almost_equal(
-            evalhyd.evald(_obs, _prd, ["NSE"], "sqrt")[0],
+            evalhyd.evald(_obs, _prd, ["NSE"], transform="sqrt")[0],
             evalhyd.evald(_obs ** 0.5, _prd ** 0.5, ["NSE"])[0]
         )
 
     def test_transform_inv(self):
         eps = 0.01 * numpy.mean(_obs)
         numpy.testing.assert_almost_equal(
-            evalhyd.evald(_obs, _prd, ["NSE"], "inv")[0],
+            evalhyd.evald(_obs, _prd, ["NSE"], transform="inv")[0],
             evalhyd.evald(1 / (_obs + eps), 1 / (_prd + eps), ["NSE"])[0]
         )
 
     def test_transform_log(self):
         eps = 0.01 * numpy.mean(_obs)
         numpy.testing.assert_almost_equal(
-            evalhyd.evald(_obs, _prd, ["NSE"], "log")[0],
+            evalhyd.evald(_obs, _prd, ["NSE"], transform="log")[0],
             evalhyd.evald(numpy.log(_obs + eps), numpy.log(_prd + eps),
                           ["NSE"])[0]
         )
 
     def test_transform_pow(self):
         numpy.testing.assert_almost_equal(
-            evalhyd.evald(_obs, _prd, ["NSE"], "pow", exponent=0.3)[0],
+            evalhyd.evald(_obs, _prd, ["NSE"], transform="pow", exponent=0.3)[0],
             evalhyd.evald(_obs ** 0.3, _prd ** 0.3, ["NSE"])[0]
         )
 
