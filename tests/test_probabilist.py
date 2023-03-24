@@ -14,9 +14,11 @@ _obs = numpy.genfromtxt("./data/q_obs.csv", delimiter=',')[numpy.newaxis, :]
 # list all available probabilistic metrics
 _all_metrics = (
     # threshold-based
-    'BS', 'BSS', 'BS_CRD', 'BS_LBD', 'REL_DIAG',
+    'BS', 'BSS', 'BS_CRD', 'BS_LBD', 'REL_DIAG', 'CRPS_FROM_BS',
+    # CDF-based
+    'CRPS_FROM_ECDF',
     # quantile-based
-    'QS', 'CRPS',
+    'QS', 'CRPS_FROM_QS',
     # contingency table-based
     'POD', 'POFD', 'FAR', 'CSI', 'ROCSS',
     # ranks-based
@@ -37,7 +39,7 @@ class TestMetrics(unittest.TestCase):
         metric: (
             numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
             [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
-        ) for metric in ('BS', 'BSS', 'BS_CRD', 'BS_LBD', 'REL_DIAG')
+        ) for metric in ('BS', 'BSS', 'BS_CRD', 'BS_LBD', 'REL_DIAG', 'CRPS_FROM_BS')
     }
     # /!\ stacked-up thresholds in CSV file for REL_DIAG
     #     because 7D metric so need to reshape array
@@ -46,11 +48,18 @@ class TestMetrics(unittest.TestCase):
                                          + (_prd.shape[2] + 1, 3))
     )
 
+    expected_cdf = {
+        metric: (
+            numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
+            [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
+        ) for metric in ('CRPS_FROM_ECDF',)
+    }
+
     expected_qtl = {
         metric: (
             numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
             [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
-        ) for metric in ('QS', 'CRPS')
+        ) for metric in ('QS', 'CRPS_FROM_QS')
     }
 
     expected_ct = {
@@ -81,6 +90,14 @@ class TestMetrics(unittest.TestCase):
                 numpy.testing.assert_almost_equal(
                     evalhyd.evalp(_obs, _prd, [metric], thr, "high")[0],
                     self.expected_thr[metric]
+                )
+
+    def test_cdf_metrics(self):
+        for metric in self.expected_cdf.keys():
+            with self.subTest(metric=metric):
+                numpy.testing.assert_almost_equal(
+                    evalhyd.evalp(_obs, _prd, [metric])[0],
+                    self.expected_cdf[metric]
                 )
 
     def test_quantiles_metrics(self):
