@@ -24,7 +24,9 @@ _all_metrics = (
     # ranks-based
     'RANK_HIST', 'DS', 'AS',
     # intervals
-    'CR', 'AW', 'AWN', 'AWI', 'WS', 'WSS'
+    'CR', 'AW', 'AWN', 'AWI', 'WS', 'WSS',
+    # multivariate
+    'ES'
 )
 
 # list all available deterministic diagnostics
@@ -83,6 +85,13 @@ class TestMetrics(unittest.TestCase):
         ) for metric in ('CR', 'AW', 'AWN', 'AWI', 'WS', 'WSS')
     }
 
+    expected_mvr = {
+        metric: (
+            numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
+            [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
+        ) for metric in ('ES',)
+    }
+
     def test_thresholds_metrics(self):
         thr = numpy.array([[690, 534, 445, numpy.nan]])
         for metric in self.expected_thr.keys():
@@ -137,6 +146,19 @@ class TestMetrics(unittest.TestCase):
                 numpy.testing.assert_almost_equal(
                     evalhyd.evalp(_obs, _prd, [metric], c_lvl=lvl)[0],
                     self.expected_itv[metric]
+                )
+
+    def test_multivariate_metrics(self):
+        n_sit = 5
+
+        multi_obs = numpy.repeat(_obs, repeats=n_sit, axis=0)
+        multi_prd = numpy.repeat(_prd, repeats=n_sit, axis=0)
+
+        for metric in self.expected_mvr.keys():
+            with self.subTest(metric=metric):
+                numpy.testing.assert_almost_equal(
+                    evalhyd.evalp(multi_obs, multi_prd, [metric], seed=7)[0],
+                    self.expected_mvr[metric]
                 )
 
 
@@ -325,10 +347,13 @@ class TestMultiDimensional(unittest.TestCase):
         multi_prd = numpy.repeat(_prd, repeats=n_sit, axis=0)
         multi_thr = numpy.repeat(self.thr, repeats=n_sit, axis=0)
 
+        # skip multisite metrics because their result is not the sum of sites
+        metrics = [m for m in self.metrics if m not in ("ES",)]
+
         multi = evalhyd.evalp(
             multi_obs,
             multi_prd,
-            self.metrics,
+            metrics,
             q_thr=multi_thr,
             events=self.events,
             c_lvl=self.lvl,
@@ -338,14 +363,14 @@ class TestMultiDimensional(unittest.TestCase):
         mono = evalhyd.evalp(
             _obs,
             _prd,
-            self.metrics,
+            metrics,
             q_thr=self.thr,
             events=self.events,
             c_lvl=self.lvl,
             seed=self.seed
         )
 
-        for m, metric in enumerate(self.metrics):
+        for m, metric in enumerate(metrics):
             for site in range(n_sit):
                 with self.subTest(metric=metric, site=site):
                     numpy.testing.assert_almost_equal(
@@ -400,17 +425,20 @@ class TestMultiDimensional(unittest.TestCase):
 
         multi_thr = numpy.repeat(self.thr, repeats=n_sit, axis=0)
 
+        # skip multisite metrics because their result is not the sum of sites
+        metrics = [m for m in self.metrics if m not in ("ES",)]
+
         multi = evalhyd.evalp(
             multi_obs,
             multi_prd,
-            self.metrics,
+            metrics,
             q_thr=multi_thr,
             events=self.events,
             c_lvl=self.lvl,
             seed=self.seed
         )
 
-        for m, metric in enumerate(self.metrics):
+        for m, metric in enumerate(metrics):
             for sit in range(n_sit):
                 for ldt in range(n_ldt):
 
