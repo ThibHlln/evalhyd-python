@@ -12,6 +12,6 @@ dependencies:
   - numpy
   - pybind11
   - xtensor-python==0.26.1
-#TODO:  - evalhyd==0.0.1
+  - evalhyd-cpp==0.1.0
   # Test dependencies
   - numpy

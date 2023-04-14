@@ -11,7 +11,7 @@ with open("evalhyd/version.py", 'r') as fv:
     exec(fv.read())
 
 # vendor dependencies (unless told otherwise via environment variable)
-deps = ['xtl', 'xtensor', 'xtensor-python', 'evalhyd']
+deps = ['xtl', 'xtensor', 'xtensor-python', 'evalhyd-cpp']
 deps_blank_path = os.path.join(os.getcwd(), 'deps', '{}', 'include')
 
 deps_include_dirs = []
