@@ -1,0 +1,19 @@
+channels:
+  - conda-forge
+dependencies:
+  # Build dependencies
+  - cxx-compiler
+  - c-compiler
+  - cmake
+  - make
+  - scikit-build
+  # Host dependencies
+  - python
+  - numpy
+  - pybind11
+  - xtl==0.7.5
+  - xtensor==0.24.6
+  - xtensor-python==0.26.1
+#  - evalhyd-cpp==0.1.0
+  # Test dependencies
+  - numpy

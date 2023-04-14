@@ -2,4 +2,4 @@
 
 Python bindings for `evalhyd` utility
 
-Documentation: https://hycar-hydro.gitlab.irstea.page/evalhyd/evalhyd-docs/python
+Documentation: https://hydrogr.github.io/evalhyd/python

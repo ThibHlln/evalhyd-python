@@ -1,14 +1,25 @@
-image: python:3.9.13
+image: mambaorg/micromamba
 
-test-evalhyd-python:
-  stage: test
+stages:
+  - build_and_test
+
+build-and-test:
+  stage: build_and_test
   variables:
     GIT_SUBMODULE_STRATEGY: recursive
   script:
+    # install dependencies
+    - micromamba install --yes --file environment.yml
+    - export EVALHYD_PYTHON_VENDOR_XTL=FALSE
+    - export EVALHYD_PYTHON_VENDOR_XTENSOR=FALSE
+    - export EVALHYD_PYTHON_VENDOR_XTENSOR_PYTHON=FALSE
+    # vendor evalhyd (while waiting for evalhyd to be uploaded to conda-forge)
+    - micromamba install --yes -c conda-forge git
+    - export EVALHYD_PYTHON_VENDOR_EVALHYD=TRUE
     # print Python version
     - python --version
     # compile and install package
-    - python -m pip install --user .[tests]
+    - python -m pip install --user .[tests] -v
     # make sure package can be imported and check version
     - python -c "import evalhyd;print(evalhyd.__version__)"
     # run test suite
