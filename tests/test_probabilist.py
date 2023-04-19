@@ -212,11 +212,29 @@ class TestMasking(unittest.TestCase):
                 evalhyd.evalp(obs, prd, ["QS"])[0]
             )
 
-        with self.subTest(conditions="predicted streamflow statistics"):
-            cdt = numpy.array([["q_prd_median{<=quantile0.7}"]], dtype='|S32')
+        with self.subTest(conditions="predicted streamflow statistics 1"):
+            cdt = numpy.array([["q_prd_median{<=qtl0.7}"]], dtype='|S32')
 
             median = numpy.squeeze(numpy.median(_prd, 2))
             msk = median <= numpy.quantile(median, 0.7)
+
+            # TODO: figure out why passing views would not work
+            obs = _obs[..., msk].copy()
+            prd = _prd[..., msk].copy()
+
+            numpy.testing.assert_almost_equal(
+                evalhyd.evalp(_obs, _prd, ["QS"], m_cdt=cdt)[0],
+                evalhyd.evalp(obs, prd, ["QS"])[0]
+            )
+
+        with self.subTest(conditions="predicted streamflow statistics 2"):
+            cdt = numpy.array([["q_prd_median{>qtl0.3,<=qtl0.7}"]], dtype='|S32')
+
+            median = numpy.squeeze(numpy.median(_prd, 2))
+            msk = (
+                    (median > numpy.quantile(median, 0.3))
+                    & (median <= numpy.quantile(median, 0.7))
+            )
 
             # TODO: figure out why passing views would not work
             obs = _obs[..., msk].copy()
@@ -237,6 +255,15 @@ class TestMasking(unittest.TestCase):
 
             numpy.testing.assert_almost_equal(
                 evalhyd.evalp(_obs, _prd, ["QS"], m_cdt=cdt)[0],
+                evalhyd.evalp(obs, prd, ["QS"])[0]
+            )
+
+        with self.subTest(conditions="no subset"):
+            cdt = numpy.array([["t{:}"]],
+                              dtype='|S32')
+
+            numpy.testing.assert_almost_equal(
+                evalhyd.evalp(obs, prd, ["QS"], m_cdt=cdt)[0],
                 evalhyd.evalp(obs, prd, ["QS"])[0]
             )
 

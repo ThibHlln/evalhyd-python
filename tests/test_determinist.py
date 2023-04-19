@@ -181,6 +181,17 @@ class TestMasking(unittest.TestCase):
                               q_thr=_thr, events=_events)[0]
             )
 
+        with self.subTest(conditions="no subset"):
+            cdt = numpy.array([["t{:}"]] * _prd.shape[0],
+                              dtype='|S32')
+
+            numpy.testing.assert_almost_equal(
+                evalhyd.evald(obs, prd, ["NSE"],
+                              q_thr=_thr, events=_events, m_cdt=cdt)[0],
+                evalhyd.evald(obs, prd, ["NSE"],
+                              q_thr=_thr, events=_events)[0]
+            )
+
 
 class TestMissingData(unittest.TestCase):
 
