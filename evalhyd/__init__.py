@@ -1,4 +1,4 @@
-"""An evaluator for determinist and probabilist streamflow predictions."""
+"""An evaluator for deterministic and probabilistic streamflow predictions."""
 
 from .version import __version__
 from .evald import evald
