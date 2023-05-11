@@ -52,6 +52,13 @@ setup(
     },
     description='Python bindings for EvalHyd',
     long_description='An evaluator for streamflow predictions.',
+    license="GPLv3",
+    classifiers=[
+        'Natural Language :: English',
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering :: Hydrology',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
+    ],
     packages=["evalhyd"],
     ext_modules=ext_modules,
     cmdclass={'build_ext': build_ext},
