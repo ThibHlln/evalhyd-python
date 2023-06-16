@@ -13,8 +13,7 @@ build-and-test:
     - export EVALHYD_PYTHON_VENDOR_XTL=FALSE
     - export EVALHYD_PYTHON_VENDOR_XTENSOR=FALSE
     - export EVALHYD_PYTHON_VENDOR_XTENSOR_PYTHON=FALSE
-    # vendor evalhyd (while waiting for evalhyd to be uploaded to conda-forge)
-    - micromamba install --yes -c conda-forge git
+    # vendor evalhyd-cpp
     - export EVALHYD_PYTHON_VENDOR_EVALHYD_CPP=TRUE
     # print Python version
     - python --version

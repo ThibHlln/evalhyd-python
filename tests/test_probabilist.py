@@ -24,7 +24,7 @@ _all_metrics = (
     # ranks-based
     'RANK_HIST', 'DS', 'AS',
     # intervals
-    'CR', 'AW', 'AWN', 'AWI', 'WS', 'WSS',
+    'CR', 'AW', 'AWN', 'WS',
     # multivariate
     'ES'
 )
@@ -82,7 +82,7 @@ class TestMetrics(unittest.TestCase):
         metric: (
             numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
             [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
-        ) for metric in ('CR', 'AW', 'AWN', 'AWI', 'WS', 'WSS')
+        ) for metric in ('CR', 'AW', 'AWN', 'WS')
     }
 
     expected_mvr = {

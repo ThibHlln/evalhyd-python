@@ -44,9 +44,21 @@ setup(
     version=__version__,
     author='Thibault Hallouin',
     author_email='thibault.hallouin@inrae.fr',
-    url='https://gitlab.irstea.fr/hycar-hydro/evalhyd/evalhyd-python',
+    download_url="https://pypi.python.org/pypi/evalhyd-python",
+    project_urls={
+        'Bug Tracker': 'https://gitlab.irstea.fr/HYCAR-Hydro/evalhyd/evalhyd-python/-/issues',
+        'Documentation': 'https://hydrogr.github.io/evalhyd/python',
+        'Source Code': 'https://gitlab.irstea.fr/hycar-hydro/evalhyd/evalhyd-python',
+    },
     description='Python bindings for EvalHyd',
     long_description='An evaluator for streamflow predictions.',
+    license="GPLv3",
+    classifiers=[
+        'Natural Language :: English',
+        'Intended Audience :: Science/Research',
+        'Topic :: Scientific/Engineering :: Hydrology',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
+    ],
     packages=["evalhyd"],
     ext_modules=ext_modules,
     cmdclass={'build_ext': build_ext},
