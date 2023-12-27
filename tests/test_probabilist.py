@@ -20,7 +20,7 @@ _all_metrics = (
     # quantile-based
     'QS', 'CRPS_FROM_QS',
     # contingency table-based
-    'POD', 'POFD', 'FAR', 'CSI', 'ROCSS',
+    'CONT_TBL', 'POD', 'POFD', 'FAR', 'CSI', 'ROCSS',
     # ranks-based
     'RANK_HIST', 'DS', 'AS',
     # intervals
@@ -68,8 +68,13 @@ class TestMetrics(unittest.TestCase):
         metric: (
             numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
             [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
-        ) for metric in ('POD', 'POFD', 'FAR', 'CSI', 'ROCSS')
+        ) for metric in ('CONT_TBL', 'POD', 'POFD', 'FAR', 'CSI', 'ROCSS')
     }
+    # /!\ stacked-up thresholds in CSV file for CONT_TBL
+    #     because 7D metric so need to reshape array
+    expected_ct['CONT_TBL'] = (
+        expected_ct['CONT_TBL'].reshape(expected_ct['POD'].shape + (4,))
+    )
 
     expected_rk = {
         metric: (
