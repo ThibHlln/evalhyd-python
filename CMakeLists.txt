@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.15)
 project(
         EvalHyd-Python
         LANGUAGES CXX C
-        VERSION 0.1.0.0
+        VERSION 0.1.2.0
         DESCRIPTION "Python bindings for evalhyd utility"
 )
 
@@ -30,7 +30,7 @@ endif()
 find_package(xtensor 0.7.5 REQUIRED)
 message(STATUS "Found xtl: ${xtl_INCLUDE_DIRS}/xtl")
 
-find_package(xtensor 0.24.6 REQUIRED)
+find_package(xtensor 0.24.7 REQUIRED)
 message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xtensor")
 
 find_package(xtensor-python 0.26.1 REQUIRED)
@@ -43,7 +43,7 @@ if(DEFINED EVALHYD_SRC)
         set(EVALHYD_BUILD_TEST OFF CACHE BOOL "configure and compile tests")
         add_subdirectory(${EVALHYD_SRC} deps/evalhyd)
 else()
-        find_package(EvalHyd 0.1.0 REQUIRED)
+        find_package(EvalHyd 0.1.2 REQUIRED)
 endif()
 
 target_link_libraries(
