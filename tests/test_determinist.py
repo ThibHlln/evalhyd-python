@@ -18,7 +18,7 @@ _all_metrics = (
     # errors-based
     'MAE', 'MARE', 'MSE', 'RMSE',
     # efficiencies-based
-    'NSE', 'KGE', 'KGE_D', 'KGEPRIME', 'KGEPRIME_D',
+    'NSE', 'KGE', 'KGE_D', 'KGEPRIME', 'KGEPRIME_D', 'KGENP', 'KGENP_D',
     # contingency table-based
     'CONT_TBL'
 )
