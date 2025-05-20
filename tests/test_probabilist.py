@@ -90,6 +90,13 @@ class TestMetrics(unittest.TestCase):
         ) for metric in ('CR', 'AW', 'AWN', 'WS')
     }
 
+    expected_itv_qlvl = {
+        metric: (
+            numpy.genfromtxt(f"./expected/evalp/{metric}_QLVL.csv", delimiter=',')
+            [numpy.newaxis, numpy.newaxis, numpy.newaxis, numpy.newaxis, ...]
+        ) for metric in ('CR',)
+    }
+
     expected_mvr = {
         metric: (
             numpy.genfromtxt(f"./expected/evalp/{metric}.csv", delimiter=',')
@@ -151,6 +158,21 @@ class TestMetrics(unittest.TestCase):
                 numpy.testing.assert_almost_equal(
                     evalhyd.evalp(_obs, _prd, [metric], c_lvl=lvl)[0],
                     self.expected_itv[metric]
+                )
+
+    def test_intervals_qlvl_metrics(self):
+        lvl = numpy.array([50., 80.])
+        qlvl = numpy.array([10., 25., 75., 90])
+        for metric in self.expected_itv_qlvl.keys():
+
+            numpy.set_printoptions(precision=13)
+            m = evalhyd.evalp(_obs, _prd[:, :, [0, 15, 30, 50], :], [metric], c_lvl=lvl, q_lvl=qlvl)[0][0, 0, 0]
+            numpy.savetxt(f"./expected/evalp/{metric}_QLVL.csv", m, delimiter=',', fmt="%.13f")
+
+            with self.subTest(metric=metric):
+                numpy.testing.assert_almost_equal(
+                    evalhyd.evalp(_obs, _prd[:, :, [0, 15, 30, 50], :], [metric], c_lvl=lvl, q_lvl=qlvl)[0],
+                    self.expected_itv_qlvl[metric]
                 )
 
     def test_multivariate_metrics(self):
