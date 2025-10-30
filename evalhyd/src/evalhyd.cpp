@@ -8,7 +8,7 @@
 
 #define FORCE_IMPORT_ARRAY
 #include <xtl/xoptional.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/views/xview.hpp>
 #include <xtensor-python/pytensor.hpp>
 
 #include "evalhyd/evald.hpp"
