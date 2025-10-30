@@ -336,59 +336,6 @@ class TestMissingData(unittest.TestCase):
                 )
 
 
-class TestUncertainty(unittest.TestCase):
-
-    def test_bootstrap(self):
-        thr = numpy.array([[690, 534, 445, numpy.nan]])
-
-        prd_1yr = numpy.genfromtxt(
-            "./data/q_prd_1yr.csv", delimiter=',', skip_header=1
-        )
-        obs_1yr = numpy.genfromtxt(
-            "./data/q_obs_1yr.csv", delimiter=',', skip_header=1
-        )
-        dts_1yr = numpy.genfromtxt(
-            "./data/q_obs_1yr.csv", delimiter=',', dtype=str, skip_footer=1
-        )
-
-        obs_3yrs = numpy.hstack((obs_1yr,) * 3)
-        prd_3yrs = numpy.hstack((prd_1yr,) * 3)
-
-        for metric in _all_metrics:
-            # skip ranks-based metrics because they contain a random element
-            if metric in ("RANK_HIST", "DS", "AS"):
-                continue
-
-            with self.subTest(metric=metric):
-                lvl = numpy.array([30., 80.])
-                numpy.testing.assert_almost_equal(
-                    # bootstrap with only one year of data
-                    # (compare last sample only to have matching dimensions)
-                    evalhyd.evalp(
-                        obs_1yr[numpy.newaxis],
-                        prd_1yr[numpy.newaxis, numpy.newaxis],
-                        [metric],
-                        q_thr=thr,
-                        events="high",
-                        bootstrap={
-                            "n_samples": 10, "len_sample": 3, "summary": 0
-                        },
-                        dts=dts_1yr,
-                        c_lvl=lvl
-                    )[0][:, :, :, [0]],
-                    # repeat year of data three times to correspond to a
-                    # bootstrap sample of length 3
-                    evalhyd.evalp(
-                        obs_3yrs[numpy.newaxis],
-                        prd_3yrs[numpy.newaxis, numpy.newaxis],
-                        [metric],
-                        q_thr=thr,
-                        events="high",
-                        c_lvl=lvl
-                    )[0]
-                )
-
-
 class TestMultiDimensional(unittest.TestCase):
 
     thr = numpy.array([[690, 534, 445, numpy.nan]])

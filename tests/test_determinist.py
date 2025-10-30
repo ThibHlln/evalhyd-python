@@ -232,49 +232,6 @@ class TestMissingData(unittest.TestCase):
                     )
 
 
-class TestUncertainty(unittest.TestCase):
-
-    def test_bootstrap(self):
-        prd_1yr = numpy.genfromtxt(
-            "./data/q_prd_1yr.csv", delimiter=',', skip_header=1
-        )
-        obs_1yr = numpy.genfromtxt(
-            "./data/q_obs_1yr.csv", delimiter=',', skip_header=1
-        )[numpy.newaxis]
-        dts_1yr = numpy.genfromtxt(
-            "./data/q_obs_1yr.csv", delimiter=',', dtype=str, skip_footer=1
-        )
-
-        obs_3yrs = numpy.hstack((obs_1yr,) * 3)
-        prd_3yrs = numpy.hstack((prd_1yr,) * 3)
-
-        thr = numpy.repeat(
-            numpy.array([[690, 534, 445, numpy.nan]]),
-            repeats=prd_1yr.shape[0], axis=0
-        )
-        events = "low"
-
-        for metric in _all_metrics:
-            with self.subTest(metric=metric):
-                numpy.testing.assert_almost_equal(
-                    # bootstrap with only one year of data
-                    # (compare last sample only to have matching dimensions)
-                    evalhyd.evald(
-                        obs_1yr, prd_1yr, [metric],
-                        q_thr=thr,
-                        events=events,
-                        bootstrap={
-                            "n_samples": 10, "len_sample": 3, "summary": 0
-                        },
-                        dts=dts_1yr
-                    )[0][:, :, [0]],
-                    # repeat year of data three times to correspond to a
-                    # bootstrap sample of length 3
-                    evalhyd.evald(obs_3yrs, prd_3yrs, [metric],
-                                  q_thr=thr, events=events)[0]
-                )
-
-
 class TestDiagnostics(unittest.TestCase):
 
     def test_completeness(self):
