@@ -139,11 +139,15 @@ class TestMetrics(unittest.TestCase):
                 )
 
     def test_ranks_metrics(self):
+        msk = numpy.ones((_prd.shape[0], _prd.shape[1], 1, _prd.shape[3]),
+                         dtype=bool)
+        msk[..., [62,214,283,306]] = False
         for metric in self.expected_rk.keys():
             with self.subTest(metric=metric):
                 numpy.testing.assert_almost_equal(
-                    evalhyd.evalp(_obs, _prd, [metric], seed=7)[0],
-                    self.expected_rk[metric]
+                    evalhyd.evalp(_obs, _prd, [metric], t_msk=msk, seed=7)[0],
+                    self.expected_rk[metric],
+                    3
                 )
 
     def test_intervals_metrics(self):
