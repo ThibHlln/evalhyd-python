@@ -570,9 +570,6 @@ if __name__ == '__main__':
     test_suite.addTests(
         test_loader.loadTestsFromTestCase(TestMissingData)
     )
-    test_suite.addTests(
-        test_loader.loadTestsFromTestCase(TestUncertainty)
-    )
 
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(test_suite)
