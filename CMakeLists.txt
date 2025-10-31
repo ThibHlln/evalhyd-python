@@ -27,13 +27,13 @@ else()
         #target_include_directories(evalhyd-python SYSTEM PRIVATE "${Python_NumPy_INCLUDE_DIRS}")
 endif()
 
-find_package(xtensor 0.7.5 REQUIRED)
+find_package(xtl 0.8.1 REQUIRED)
 message(STATUS "Found xtl: ${xtl_INCLUDE_DIRS}/xtl")
 
-find_package(xtensor 0.24.7 REQUIRED)
+find_package(xtensor 0.27.1 REQUIRED)
 message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xtensor")
 
-find_package(xtensor-python 0.26.1 REQUIRED)
+find_package(xtensor-python 0.29.0 REQUIRED)
 message(STATUS "Found xtensor-python: ${xtensor-python_INCLUDE_DIRS}/xtensor-python")
 
 find_package(pybind11 REQUIRED)
