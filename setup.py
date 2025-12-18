@@ -33,7 +33,7 @@ ext_modules = [
             *deps_include_dirs
         ],
         language='c++',
-        cxx_std=17,
+        cxx_std=20,
         define_macros=[('VERSION_INFO', __version__)]
     ),
 ]
