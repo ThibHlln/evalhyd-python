@@ -6,6 +6,16 @@
 
    Yet to be versioned and released. Only available from *dev* branch until then.
 
+v0.1.3.0
+--------
+
+Released on 2026-02-24.
+
+.. rubric:: Dependency changes
+
+* move to `evalhyd-cpp==0.1.3`
+  (`see changelog <https://hydrogr.github.io/evalhyd/cpp/changelog.html#v0-1-3>`_)
+
 v0.1.2.0
 --------
 

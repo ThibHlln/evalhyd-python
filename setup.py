@@ -33,7 +33,7 @@ ext_modules = [
             *deps_include_dirs
         ],
         language='c++',
-        cxx_std=17,
+        cxx_std=20,
         define_macros=[('VERSION_INFO', __version__)]
     ),
 ]
@@ -43,8 +43,10 @@ setup(
     name='evalhyd-python',
     version=__version__,
     author='Thibault Hallouin',
-    author_email='thibault.hallouin@inrae.fr',
-    download_url="https://pypi.python.org/pypi/evalhyd-python",
+    author_email='t.hallouin@brgm.fr',
+    maintainer='Francois Bourgin',
+    maintainer_email='francois.bourgin@inrae.fr',
+    download_url='https://pypi.python.org/pypi/evalhyd-python',
     project_urls={
         'Bug Tracker': 'https://gitlab.irstea.fr/HYCAR-Hydro/evalhyd/evalhyd-python/-/issues',
         'Documentation': 'https://hydrogr.github.io/evalhyd/python',

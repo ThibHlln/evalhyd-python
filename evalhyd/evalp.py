@@ -14,6 +14,7 @@ def evalp(q_obs: NDArray[dtype('float64')],
           q_thr: NDArray[dtype('float64')] = None,
           events: str = None,
           c_lvl: NDArray[dtype('float64')] = None,
+          q_lvl: NDArray[dtype('float64')] = None,
           t_msk: NDArray[dtype('bool')] = None,
           m_cdt: NDArray[dtype('|S32')] = None,
           bootstrap: Dict[str, int] = None,
@@ -36,6 +37,8 @@ def evalp(q_obs: NDArray[dtype('float64')],
         kwargs['events'] = events
     if c_lvl is not None:
         kwargs['c_lvl'] = c_lvl
+    if q_lvl is not None:
+        kwargs['q_lvl'] = q_lvl
     if t_msk is not None:
         kwargs['t_msk'] = t_msk
     if m_cdt is not None:
@@ -55,6 +58,7 @@ def evalp(q_obs: NDArray[dtype('float64')],
         'q_prd': 4,
         'q_thr': 2,
         'c_lvl': 1,
+        'q_lvl': 1,
         't_msk': 4,
         'm_cdt': 2,
         'dts': 1
