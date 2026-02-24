@@ -43,8 +43,10 @@ setup(
     name='evalhyd-python',
     version=__version__,
     author='Thibault Hallouin',
-    author_email='thibault.hallouin@inrae.fr',
-    download_url="https://pypi.python.org/pypi/evalhyd-python",
+    author_email='t.hallouin@brgm.fr',
+    maintainer='Francois Bourgin',
+    maintainer_email='francois.bourgin@inrae.fr'
+    download_url='https://pypi.python.org/pypi/evalhyd-python',
     project_urls={
         'Bug Tracker': 'https://gitlab.irstea.fr/HYCAR-Hydro/evalhyd/evalhyd-python/-/issues',
         'Documentation': 'https://hydrogr.github.io/evalhyd/python',

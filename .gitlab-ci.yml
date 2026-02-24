@@ -14,7 +14,7 @@ build-and-test:
     - export EVALHYD_PYTHON_VENDOR_XTENSOR=FALSE
     - export EVALHYD_PYTHON_VENDOR_XTENSOR_PYTHON=FALSE
     # vendor evalhyd-cpp
-    - export EVALHYD_PYTHON_VENDOR_EVALHYD_CPP=TRUE
+    - export EVALHYD_PYTHON_VENDOR_EVALHYD_CPP=FALSE
     # print Python version
     - python --version
     # compile and install package

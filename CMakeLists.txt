@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.15)
 project(
         EvalHyd-Python
         LANGUAGES CXX C
-        VERSION 0.1.2.0
+        VERSION 0.1.3.0
         DESCRIPTION "Python bindings for evalhyd utility"
 )
 
