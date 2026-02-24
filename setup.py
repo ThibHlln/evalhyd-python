@@ -45,7 +45,7 @@ setup(
     author='Thibault Hallouin',
     author_email='t.hallouin@brgm.fr',
     maintainer='Francois Bourgin',
-    maintainer_email='francois.bourgin@inrae.fr'
+    maintainer_email='francois.bourgin@inrae.fr',
     download_url='https://pypi.python.org/pypi/evalhyd-python',
     project_urls={
         'Bug Tracker': 'https://gitlab.irstea.fr/HYCAR-Hydro/evalhyd/evalhyd-python/-/issues',
