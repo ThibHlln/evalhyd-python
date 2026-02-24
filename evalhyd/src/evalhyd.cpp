@@ -8,7 +8,7 @@
 
 #define FORCE_IMPORT_ARRAY
 #include <xtl/xoptional.hpp>
-#include <xtensor/xview.hpp>
+#include <xtensor/views/xview.hpp>
 #include <xtensor-python/pytensor.hpp>
 
 #include "evalhyd/evald.hpp"
@@ -63,6 +63,7 @@ auto evalp(
     const xt::pytensor<double, 2>& q_thr,
     std::optional<std::string> events,
     const std::vector<double>& c_lvl,
+    const std::vector<double>& q_lvl,
     const xt::pytensor<bool, 4>& t_msk,
     const xt::pytensor<std::array<char, 32>, 2>& m_cdt,
     std::optional<std::unordered_map<std::string, int>> bootstrap,
@@ -78,6 +79,7 @@ auto evalp(
         q_thr,
         (events.has_value()) ? events.value() : xtl::missing<std::string>(),
         c_lvl,
+        q_lvl,
         t_msk,
         m_cdt,
         (bootstrap.has_value())
@@ -130,6 +132,7 @@ PYBIND11_MODULE(_evalhyd, m)
         py::arg("q_thr") = xt::pytensor<double, 2>({0}),
         py::arg("events") = py::none(),
         py::arg("c_lvl") = py::list(),
+        py::arg("q_lvl") = py::list(),
         py::arg("t_msk") = xt::pytensor<bool, 4>({0}),
         py::arg("m_cdt") = xt::pytensor<std::array<char, 32>, 2>({0}),
         py::arg("bootstrap") = py::none(),
