@@ -21,14 +21,19 @@ jobs:
 
       # Used to host cibuildwheel
       - uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
 
       - name: Install cibuildwheel
         run: python -m pip install cibuildwheel==3.4.0
 
       - name: Build wheels
         run: python -m cibuildwheel --output-dir dist
+        env:
+          # skip Python < 3.10 for Windows ARM64 only
+          CIBW_SKIP: |
+            cp36-*  # [win_arm64]
+            cp37-*  # [win_arm64]
+            cp38-*  # [win_arm64]
+            cp39-*  # [win_arm64]
 
       - uses: actions/upload-artifact@v6
         with:
