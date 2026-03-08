@@ -29,7 +29,7 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_ENVIRONMENT: |
-            CC=cl CXX=cl  # [windows]
+            CC=clang-cl CXX=clang-cl  # [windows]
 
       - uses: actions/upload-artifact@v6
         with:
