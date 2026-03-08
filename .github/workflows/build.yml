@@ -28,7 +28,9 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir dist
         env:
-          PIP_PREFER_BINARY: 1
+          CIBW_BEFORE_BUILD_WINDOWS: |
+            python -m pip install --upgrade pip
+            pip install numpy
 
           CIBW_ENVIRONMENT_WINDOWS: >
             CC=cl
