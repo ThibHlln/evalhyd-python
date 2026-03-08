@@ -29,7 +29,7 @@ jobs:
         run: python -m cibuildwheel --output-dir dist
         env:
           # skip Python < 3.10 for Windows ARM64 only
-          CIBW_SKIP: ${{ matrix.os == 'windows-11-arm' && 'cp36-* cp37-* cp38-* cp39-*' || '' }}
+          CIBW_SKIP: ${{ matrix.os == 'windows-11-arm' && 'cp36-* cp37-* cp38-* cp39-* cp310-*' || '' }}
 
       - uses: actions/upload-artifact@v6
         with:
