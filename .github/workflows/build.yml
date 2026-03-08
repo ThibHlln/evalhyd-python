@@ -1,4 +1,4 @@
-name: build python wheels
+name: build python sdist+wheels
 
 on: [push, pull_request]
 
@@ -26,10 +26,14 @@ jobs:
         run: python -m pip install cibuildwheel==3.4.0
 
       - name: Build wheels
-        run: python -m cibuildwheel --output-dir wheelhouse
+        run: python -m cibuildwheel --output-dir dist
         env:
-          CIBW_ENVIRONMENT: |
-            CC=clang-cl CXX=clang-cl  # [windows]
+          PIP_PREFER_BINARY: 1
+          
+          CIBW_ENVIRONMENT_WINDOWS: >
+            CC=cl
+            CXX=cl
+            AR=lib
 
       - uses: actions/upload-artifact@v6
         with:
