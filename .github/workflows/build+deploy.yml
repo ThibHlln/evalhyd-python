@@ -1,6 +1,9 @@
 name: build python sdist+wheels and deploy to testpypi+pypi
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - deploy
 
 jobs:
   build_wheels:
