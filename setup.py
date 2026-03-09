@@ -65,6 +65,5 @@ setup(
     ext_modules=ext_modules,
     cmdclass={'build_ext': build_ext},
     install_requires=['numpy>=1.16'],
-    extras_require={'tests': 'numpy>=1.16'},
     zip_safe=False,
 )
